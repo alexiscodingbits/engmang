@@ -1,10 +1,35 @@
 'use client'
 
 import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
 
 export default function Navbar() {
-  const { data: session } = useSession()
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    // Get initial session
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+
+    // Subscribe to auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
     <nav className="border-b border-zinc-800 bg-zinc-950">
@@ -14,7 +39,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-6">
-          {session ? (
+          {user ? (
             <>
               <Link href="/feed" className="text-sm text-zinc-400 hover:text-white transition-colors">
                 Feed
@@ -26,7 +51,7 @@ export default function Navbar() {
                 FAQ
               </Link>
               <button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="text-sm text-zinc-500 hover:text-white transition-colors"
               >
                 Sign out

@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -14,43 +14,35 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
 
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, year }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.error)
-        return
-      }
-
-      // Auto sign in after registration
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError(result.error)
-      } else {
-        router.push('/feed')
-        router.refresh()
-      }
-    } catch {
-      setError('Something went wrong')
-    } finally {
-      setLoading(false)
+    if (!email.endsWith('@tcd.ie')) {
+      setError('You must use a @tcd.ie email address')
+      return
     }
+
+    setLoading(true)
+    const supabase = createClient()
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, year: parseInt(year) },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    setLoading(false)
+
+    if (signUpError) {
+      setError(signUpError.message)
+      return
+    }
+
+    router.push('/auth/confirm')
   }
 
   return (

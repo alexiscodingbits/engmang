@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { PostType, ModuleSection } from '@prisma/client'
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const userId = (session.user as any).id as string
+  const userId = user.id
 
   const { searchParams } = new URL(req.url)
   const sort = searchParams.get('sort') ?? 'newest'
@@ -68,11 +68,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const userId = (session.user as any).id as string
+  const userId = user.id
+
+  // Ensure Prisma User exists before creating a post with an authorId FK
+  const { ensureUser } = await import('@/lib/supabase/ensure-user')
+  await ensureUser(user)
 
   const body = await req.json()
   const { title, postBody, type, imageUrl, linkUrl, moduleCode, moduleYear, section } = body

@@ -21,14 +21,12 @@ enum ModuleSection {
 }
 
 model User {
-  id               String     @id @default(cuid())
+  id               String     @id  // Supabase Auth UUID — set explicitly on create
   name             String
   email            String     @unique
-  password         String
   year             Int        @default(1)
   bio              String?
   avatarUrl        String?
-  isVerified       Boolean    @default(false)
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
