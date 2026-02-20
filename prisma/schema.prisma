@@ -7,36 +7,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  password      String
-  year          Int       @default(1)
-  bio           String?
-  avatarUrl     String?
-  isVerified    Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+enum PostType {
+  TEXT
+  IMAGE
+  LINK
+  QUESTION
+}
 
-  posts         Post[]
-  comments      Comment[]
-  sentMessages  Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+enum ModuleSection {
+  NOTES
+  QUESTIONS
+  UPLOADED_WORK
+}
+
+model User {
+  id               String     @id @default(cuid())
+  name             String
+  email            String     @unique
+  password         String
+  year             Int        @default(1)
+  bio              String?
+  avatarUrl        String?
+  isVerified       Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  posts            Post[]
+  comments         Comment[]
+  votes            Vote[]
+  bookmarks        Bookmark[]
+  sentMessages     Message[]  @relation("SentMessages")
+  receivedMessages Message[]  @relation("ReceivedMessages")
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  title     String
-  body      String
-  category  String   @default("general")
-  upvotes   Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String         @id @default(cuid())
+  title       String
+  body        String?
+  type        PostType       @default(TEXT)
+  imageUrl    String?
+  linkUrl     String?
+  // Module posts only
+  moduleCode  String?
+  moduleYear  Int?
+  section     ModuleSection?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  comments  Comment[]
+  author      User           @relation(fields: [authorId], references: [id])
+  authorId    String
+  comments    Comment[]
+  votes       Vote[]
+  bookmarks   Bookmark[]
 }
 
 model Comment {
@@ -46,8 +68,33 @@ model Comment {
 
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  value     Int      // 1 = upvote, -1 = downvote
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  @@unique([userId, postId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+
+  @@unique([userId, postId])
 }
 
 model Message {
