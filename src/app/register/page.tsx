@@ -31,7 +31,7 @@ export default function RegisterPage() {
       password,
       options: {
         data: { name, year: parseInt(year) },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `https://www.engmang.ie/auth/callback`,
       },
     })
 
