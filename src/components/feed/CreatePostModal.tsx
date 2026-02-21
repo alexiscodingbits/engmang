@@ -28,12 +28,44 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
   const [postBody, setPostBody] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
+  const [fileUrl, setFileUrl] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [uploadedFileName, setUploadedFileName] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function uploadFile(file: File, onDone: (url: string) => void) {
+    setUploading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+      })
+      if (!res.ok) throw new Error('Could not get upload URL')
+      const { presignedUrl, publicUrl } = await res.json()
+
+      const putRes = await fetch(presignedUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      })
+      if (!putRes.ok) throw new Error('Upload to storage failed')
+
+      onDone(publicUrl)
+      setUploadedFileName(file.name)
+    } catch {
+      setError('File upload failed. Please try again.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!title.trim()) { setError('Title is required'); return }
+    if (uploading) { setError('Please wait for the file to finish uploading'); return }
     setSubmitting(true)
     setError('')
 
@@ -43,6 +75,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
       type,
       imageUrl: type === 'IMAGE' ? imageUrl : undefined,
       linkUrl: type === 'LINK' ? linkUrl : undefined,
+      fileUrl: fileUrl || undefined,
     }
     if (moduleContext) {
       payload.moduleCode = moduleContext.moduleCode
@@ -66,6 +99,10 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
     setSubmitting(false)
   }
 
+  // File picker shown for IMAGE posts; attachment picker shown for NOTES module section
+  const showImagePicker = type === 'IMAGE'
+  const showAttachmentPicker = moduleContext?.section === 'NOTES'
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
       <div
@@ -87,7 +124,12 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
               <button
                 key={t.value}
                 type="button"
-                onClick={() => setType(t.value)}
+                onClick={() => {
+                  setType(t.value)
+                  setImageUrl('')
+                  setFileUrl('')
+                  setUploadedFileName('')
+                }}
                 className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-lg border text-xs font-medium transition-colors ${
                   type === t.value
                     ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
@@ -122,14 +164,15 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
             />
           )}
 
-          {/* Image URL */}
-          {type === 'IMAGE' && (
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="Image URL (https://…)"
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+          {/* Image file picker */}
+          {showImagePicker && (
+            <FilePicker
+              accept="image/*"
+              label="Click to choose an image"
+              uploading={uploading}
+              uploadedFileName={uploadedFileName}
+              uploaded={!!imageUrl}
+              onChange={(file) => uploadFile(file, setImageUrl)}
             />
           )}
 
@@ -153,6 +196,18 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
             </>
           )}
 
+          {/* Attachment picker for NOTES module section */}
+          {showAttachmentPicker && (
+            <FilePicker
+              accept=".pdf,.doc,.docx,.ppt,.pptx,image/*"
+              label="Attach file (PDF, images, slides…)"
+              uploading={uploading}
+              uploadedFileName={uploadedFileName}
+              uploaded={!!fileUrl}
+              onChange={(file) => uploadFile(file, setFileUrl)}
+            />
+          )}
+
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
           <div className="flex gap-3 pt-1">
@@ -165,14 +220,60 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
             </button>
             <button
               type="submit"
-              disabled={submitting || !title.trim()}
+              disabled={submitting || uploading || !title.trim()}
               className="flex-1 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-950 text-sm font-semibold transition-colors"
             >
-              {submitting ? 'Posting…' : 'Post'}
+              {uploading ? 'Uploading…' : submitting ? 'Posting…' : 'Post'}
             </button>
           </div>
         </form>
       </div>
     </div>
+  )
+}
+
+function FilePicker({
+  accept,
+  label,
+  uploading,
+  uploadedFileName,
+  uploaded,
+  onChange,
+}: {
+  accept: string
+  label: string
+  uploading: boolean
+  uploadedFileName: string
+  uploaded: boolean
+  onChange: (file: File) => void
+}) {
+  return (
+    <label className="block w-full cursor-pointer">
+      <input
+        type="file"
+        accept={accept}
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) onChange(file)
+        }}
+      />
+      <div className={`flex items-center gap-3 border border-dashed rounded-lg px-4 py-3 transition-colors ${
+        uploaded
+          ? 'border-emerald-600 bg-emerald-500/5'
+          : 'border-zinc-700 bg-zinc-800 hover:border-emerald-600'
+      }`}>
+        <span className="text-lg flex-shrink-0">
+          {uploading ? '⏳' : uploaded ? '✅' : '📎'}
+        </span>
+        <span className="text-sm truncate min-w-0">
+          {uploading
+            ? <span className="text-zinc-400">Uploading…</span>
+            : uploaded
+            ? <span className="text-emerald-400">{uploadedFileName}</span>
+            : <span className="text-zinc-500">{label}</span>}
+        </span>
+      </div>
+    </label>
   )
 }

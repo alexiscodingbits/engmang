@@ -47,6 +47,7 @@ model Post {
   type        PostType       @default(TEXT)
   imageUrl    String?
   linkUrl     String?
+  fileUrl     String?  // R2-hosted attachment (PDFs, docs, images)
   // Module posts only
   moduleCode  String?
   moduleYear  Int?

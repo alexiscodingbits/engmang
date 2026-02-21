@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
       type: post.type,
       imageUrl: post.imageUrl,
       linkUrl: post.linkUrl,
+      fileUrl: post.fileUrl,
       moduleCode: post.moduleCode,
       moduleYear: post.moduleYear,
       section: post.section,
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
   await ensureUser(user)
 
   const body = await req.json()
-  const { title, postBody, type, imageUrl, linkUrl, moduleCode, moduleYear, section } = body
+  const { title, postBody, type, imageUrl, linkUrl, fileUrl, moduleCode, moduleYear, section } = body
 
   if (!title?.trim()) {
     return NextResponse.json({ error: 'Title is required' }, { status: 400 })
@@ -93,6 +94,7 @@ export async function POST(req: NextRequest) {
       type: (type as PostType) ?? 'TEXT',
       imageUrl: imageUrl?.trim() ?? null,
       linkUrl: linkUrl?.trim() ?? null,
+      fileUrl: fileUrl?.trim() ?? null,
       moduleCode: moduleCode ?? null,
       moduleYear: moduleYear ? parseInt(moduleYear) : null,
       section: section ? (section as ModuleSection) : null,

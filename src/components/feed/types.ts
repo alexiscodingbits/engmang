@@ -8,6 +8,7 @@ export interface Post {
   type: PostType
   imageUrl: string | null
   linkUrl: string | null
+  fileUrl: string | null
   moduleCode: string | null
   moduleYear: number | null
   section: ModuleSection | null

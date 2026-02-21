@@ -91,6 +91,19 @@ export default function PostCard({ post, onUpdate }: Props) {
         </a>
       )}
 
+      {/* File attachment */}
+      {post.fileUrl && (
+        <a
+          href={post.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm mb-3 transition-colors"
+        >
+          <span>{post.fileUrl.match(/\.pdf$/i) ? '📄' : '📎'}</span>
+          <span>View attachment</span>
+        </a>
+      )}
+
       {/* Actions */}
       <div className="flex items-center gap-4 pt-2 border-t border-zinc-800 mt-2">
         <VoteButtons
