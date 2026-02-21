@@ -12,8 +12,12 @@ export default async function FeedPage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { hasSeenTour: true },
+    select: { hasSeenWelcome: true, hasSeenTour: true },
   })
+
+  if (!dbUser?.hasSeenWelcome) {
+    redirect('/welcome')
+  }
 
   return (
     <main className="min-h-screen bg-zinc-950 pt-20 pb-12">

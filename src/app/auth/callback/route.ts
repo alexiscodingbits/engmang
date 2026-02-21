@@ -51,11 +51,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/confirm?error=true', request.url))
   }
 
-  const dbUser = await ensureUser(user)
+  await ensureUser(user)
 
-  // New users (hasSeenWelcome === false) see the welcome screen first
-  const destination = dbUser.hasSeenWelcome ? '/feed' : '/welcome'
-  const response = NextResponse.redirect(new URL(destination, request.url))
+  // Always redirect to /feed — feed/page.tsx handles the /welcome redirect for new users
+  const response = NextResponse.redirect(new URL('/feed', request.url))
 
   // Attach the Supabase session cookies to the redirect response
   cookiesToSet.forEach(({ name, value, options }) => {

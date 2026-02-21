@@ -47,6 +47,15 @@ export default function Navbar() {
               <Link id="tour-messages" href="/messages" className="text-sm text-zinc-400 hover:text-white transition-colors">
                 Messages
               </Link>
+              <Link
+                href="https://buymeacoffee.com/alexmcconnell"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg bg-[#FFDD00] hover:bg-yellow-300 text-zinc-900 transition-colors"
+              >
+                <span>☕</span>
+                <span>Buy me a coffee</span>
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="text-sm text-zinc-500 hover:text-white transition-colors"
