@@ -7,16 +7,9 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  await prisma.user.upsert({
+  await prisma.user.update({
     where: { id: user.id },
-    update: { hasSeenTour: true },
-    create: {
-      id: user.id,
-      email: user.email!,
-      name: user.user_metadata?.name ?? user.email!.split('@')[0],
-      year: Number(user.user_metadata?.year ?? 1),
-      hasSeenTour: true,
-    },
+    data: { hasSeenTour: true },
   })
 
   return NextResponse.json({ ok: true })
