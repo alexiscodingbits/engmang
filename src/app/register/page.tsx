@@ -42,7 +42,8 @@ export default function RegisterPage() {
       return
     }
 
-    router.push('/auth/confirm')
+    //router.push('/auth/confirm')
+    router.push('/feed')
   }
 
   return (
