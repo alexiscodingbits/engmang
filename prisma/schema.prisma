@@ -36,6 +36,8 @@ model User {
   bookmarks        Bookmark[]
   sentMessages     Message[]  @relation("SentMessages")
   receivedMessages Message[]  @relation("ReceivedMessages")
+  favorites        Favorite[] @relation("UserFavorites")
+  favoritedBy      Favorite[] @relation("FavoritedBy")
 }
 
 model Post {
@@ -105,6 +107,17 @@ model Message {
   senderId   String
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
   receiverId String
+}
+
+model Favorite {
+  userId    String
+  targetId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation("UserFavorites", fields: [userId], references: [id])
+  target    User     @relation("FavoritedBy", fields: [targetId], references: [id])
+
+  @@id([userId, targetId])
 }
 
 model FaqItem {

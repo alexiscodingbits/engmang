@@ -47,9 +47,6 @@ export default function Navbar() {
               <Link href="/messages" className="text-sm text-zinc-400 hover:text-white transition-colors">
                 Messages
               </Link>
-              <Link href="/faq" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                FAQ
-              </Link>
               <button
                 onClick={handleSignOut}
                 className="text-sm text-zinc-500 hover:text-white transition-colors"
