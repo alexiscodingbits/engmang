@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
+import { ensureUser } from '@/lib/supabase/ensure-user'
 import FeedClient from '@/components/feed/FeedClient'
 
 export default async function FeedPage() {
@@ -10,12 +10,10 @@ export default async function FeedPage() {
     redirect('/login')
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { hasSeenWelcome: true, hasSeenTour: true },
-  })
+  // ensureUser upserts — safe even if the Prisma row doesn't exist yet.
+  const dbUser = await ensureUser(user)
 
-  if (!dbUser?.hasSeenWelcome) {
+  if (!dbUser.hasSeenWelcome) {
     redirect('/welcome')
   }
 
