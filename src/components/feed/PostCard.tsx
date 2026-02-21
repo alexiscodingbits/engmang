@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Post } from './types'
 import VoteButtons from './VoteButtons'
 import BookmarkButton from './BookmarkButton'
 import CommentSection from './CommentSection'
+import { createClient } from '@/lib/supabase/client'
 
 const TYPE_BADGE: Record<string, { label: string; color: string }> = {
   TEXT: { label: 'Text', color: 'bg-zinc-700 text-zinc-300' },
@@ -16,11 +17,19 @@ const TYPE_BADGE: Record<string, { label: string; color: string }> = {
 interface Props {
   post: Post
   onUpdate: (post: Post) => void
+  onDelete: (postId: string) => void
 }
 
-export default function PostCard({ post, onUpdate }: Props) {
+export default function PostCard({ post, onUpdate, onDelete }: Props) {
   const [showComments, setShowComments] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const badge = TYPE_BADGE[post.type] ?? TYPE_BADGE.TEXT
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null))
+  }, [])
 
   function handleVoteChange(voteScore: number, userVote: 1 | -1 | null) {
     onUpdate({ ...post, voteScore, userVote })
@@ -34,8 +43,21 @@ export default function PostCard({ post, onUpdate }: Props) {
     onUpdate({ ...post, commentCount: post.commentCount + delta })
   }
 
+  async function handleDelete() {
+    setDeleting(true)
+    const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE' })
+    if (res.ok) {
+      onDelete(post.id)
+    } else {
+      setDeleting(false)
+      setConfirmDelete(false)
+    }
+  }
+
   const yearLabel = (y: number) =>
     ['', '1st', '2nd', '3rd', '4th', '5th'][y] ?? `${y}th`
+
+  const isAuthor = currentUserId === post.authorId
 
   return (
     <article className="tour-post-card bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
@@ -127,7 +149,34 @@ export default function PostCard({ post, onUpdate }: Props) {
           <span>{post.commentCount}</span>
         </button>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          {isAuthor && (
+            confirmDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500 text-xs">Delete post?</span>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="text-xs text-red-400 hover:text-red-300 font-medium disabled:opacity-50 transition-colors"
+                >
+                  {deleting ? 'Deleting…' : 'Yes'}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="text-xs text-zinc-600 hover:text-red-400 transition-colors"
+              >
+                Delete
+              </button>
+            )
+          )}
           <BookmarkButton
             postId={post.id}
             isBookmarked={post.isBookmarked}

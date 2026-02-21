@@ -67,6 +67,7 @@ model Post {
 model Comment {
   id        String   @id @default(cuid())
   body      String
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
 
   author    User     @relation(fields: [authorId], references: [id])

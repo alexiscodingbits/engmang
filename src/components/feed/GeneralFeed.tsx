@@ -32,6 +32,10 @@ export default function GeneralFeed() {
     setPosts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
   }
 
+  function handlePostDelete(id: string) {
+    setPosts((prev) => prev.filter((p) => p.id !== id))
+  }
+
   const filteredPosts = searchQuery.trim()
     ? posts.filter((p) => {
         const q = searchQuery.toLowerCase()
@@ -107,7 +111,7 @@ export default function GeneralFeed() {
       ) : (
         <div className="space-y-4">
           {filteredPosts.map((post) => (
-            <PostCard key={post.id} post={post} onUpdate={handlePostUpdate} />
+            <PostCard key={post.id} post={post} onUpdate={handlePostUpdate} onDelete={handlePostDelete} />
           ))}
         </div>
       )}

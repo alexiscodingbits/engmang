@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import type { Comment } from './types'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   postId: string
@@ -13,7 +14,13 @@ export default function CommentSection({ postId, onCountChange }: Props) {
   const [loading, setLoading] = useState(true)
   const [body, setBody] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null))
+  }, [])
 
   useEffect(() => {
     fetch(`/api/posts/${postId}/comments`)
@@ -41,6 +48,16 @@ export default function CommentSection({ postId, onCountChange }: Props) {
     setSubmitting(false)
   }
 
+  async function handleDeleteComment(commentId: string) {
+    const res = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' })
+    if (res.ok) {
+      setComments((prev) =>
+        prev.map((c) => (c.id === commentId ? { ...c, isDeleted: true } : c))
+      )
+      setConfirmDeleteId(null)
+    }
+  }
+
   const yearLabel = (y: number) =>
     ['', '1st', '2nd', '3rd', '4th', '5th'][y] ?? `${y}th`
 
@@ -60,18 +77,52 @@ export default function CommentSection({ postId, onCountChange }: Props) {
           {comments.map((c) => (
             <div key={c.id} className="flex gap-3">
               <div className="w-6 h-6 rounded-full bg-zinc-700 flex items-center justify-center text-zinc-300 font-bold text-xs shrink-0 mt-0.5">
-                {c.author.name.charAt(0).toUpperCase()}
+                {c.isDeleted ? '?' : c.author.name.charAt(0).toUpperCase()}
               </div>
-              <div>
-                <span className="text-zinc-300 text-xs font-medium">{c.author.name}</span>
-                <span className="text-zinc-600 text-xs ml-1.5">
-                  {yearLabel(c.author.year)} year ·{' '}
-                  {new Date(c.createdAt).toLocaleDateString('en-IE', {
-                    day: 'numeric',
-                    month: 'short',
-                  })}
-                </span>
-                <p className="text-zinc-400 text-sm mt-0.5">{c.body}</p>
+              <div className="flex-1 min-w-0">
+                {c.isDeleted ? (
+                  <p className="text-zinc-600 text-sm italic">This message was deleted.</p>
+                ) : (
+                  <>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-zinc-300 text-xs font-medium">{c.author.name}</span>
+                      <span className="text-zinc-600 text-xs">
+                        {yearLabel(c.author.year)} year ·{' '}
+                        {new Date(c.createdAt).toLocaleDateString('en-IE', {
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </span>
+                      {currentUserId === c.authorId && (
+                        confirmDeleteId === c.id ? (
+                          <span className="ml-auto flex items-center gap-1.5 text-xs">
+                            <span className="text-zinc-500">Delete?</span>
+                            <button
+                              onClick={() => handleDeleteComment(c.id)}
+                              className="text-red-400 hover:text-red-300 font-medium transition-colors"
+                            >
+                              Yes
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                            >
+                              No
+                            </button>
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(c.id)}
+                            className="ml-auto text-xs text-zinc-700 hover:text-red-400 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        )
+                      )}
+                    </div>
+                    <p className="text-zinc-400 text-sm mt-0.5">{c.body}</p>
+                  </>
+                )}
               </div>
             </div>
           ))}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Post, PostType } from './types'
+import type { Post } from './types'
 import { NOTE_TAGS } from '@/lib/modules'
 
 type ModuleContext = {
@@ -15,12 +15,6 @@ interface Props {
   onCreated: (post: Post) => void
   moduleContext?: ModuleContext
 }
-
-const MODULE_POST_TYPES: { value: PostType; label: string; icon: string }[] = [
-  { value: 'TEXT', label: 'Text', icon: '📝' },
-  { value: 'LINK', label: 'Link', icon: '🔗' },
-  { value: 'IMAGE', label: 'Image', icon: '🖼️' },
-]
 
 export default function CreatePostModal({ onClose, onCreated, moduleContext }: Props) {
   const isGeneralFeed = !moduleContext
@@ -36,7 +30,6 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
 
   // Module-only fields
   const [title, setTitle] = useState('')
-  const [type, setType] = useState<PostType>('TEXT')
   const [noteTag, setNoteTag] = useState('')
 
   // Image upload tracking
@@ -107,10 +100,10 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
         }
       : {
           title,
-          postBody,
-          type,
-          imageUrl: type === 'IMAGE' ? imageUrl : undefined,
-          linkUrl: type === 'LINK' ? linkUrl : undefined,
+          postBody: postBody.trim() || undefined,
+          type: 'TEXT',
+          imageUrl: imageUrl || undefined,
+          linkUrl: linkUrl.trim() || undefined,
           fileUrl: fileUrl || undefined,
           noteTag: isNotes ? noteTag : undefined,
           moduleCode: moduleContext!.moduleCode,
@@ -199,9 +192,9 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
               </div>
             </>
           ) : (
-            /* ── Module post form ── */
+            /* ── Module post form (unified) ── */
             <>
-              {/* Note tag selector (NOTES section only) */}
+              {/* Note tag selector (NOTES section only — required) */}
               {isNotes && (
                 <select
                   value={noteTag}
@@ -215,30 +208,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                 </select>
               )}
 
-              {/* Type selector */}
-              <div className="flex gap-2">
-                {MODULE_POST_TYPES.map((t) => (
-                  <button
-                    key={t.value}
-                    type="button"
-                    onClick={() => {
-                      setType(t.value)
-                      setImageUrl('')
-                      setImageUploadedName('')
-                    }}
-                    className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-lg border text-xs font-medium transition-colors ${
-                      type === t.value
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                        : 'border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'
-                    }`}
-                  >
-                    <span className="text-lg">{t.icon}</span>
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Title */}
+              {/* Title (required) */}
               <input
                 type="text"
                 value={title}
@@ -247,55 +217,49 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
               />
 
-              {/* Body */}
-              {(type === 'TEXT' || type === 'LINK') && (
-                <textarea
-                  value={postBody}
-                  onChange={(e) => setPostBody(e.target.value)}
-                  placeholder={type === 'LINK' ? 'Description (optional)…' : 'Write something…'}
-                  rows={3}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
-                />
-              )}
+              {/* Body (optional) */}
+              <textarea
+                value={postBody}
+                onChange={(e) => setPostBody(e.target.value)}
+                placeholder="Description (optional)…"
+                rows={3}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
+              />
 
-              {/* Link URL */}
-              {type === 'LINK' && (
-                <input
-                  type="url"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  placeholder="URL (https://…)"
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
-                />
-              )}
+              {/* Link URL (optional) */}
+              <input
+                type="url"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                placeholder="Link URL (optional)"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+              />
 
-              {/* Image picker */}
-              {type === 'IMAGE' && (
-                <FilePicker
+              {/* Image + file uploads (optional) */}
+              <div className="flex gap-3">
+                <UploadButton
                   accept="image/*"
-                  label="Click to choose an image"
+                  label="Upload Image"
+                  icon="🖼️"
                   uploading={imageUploading}
-                  uploadedFileName={imageUploadedName}
                   uploaded={!!imageUrl}
+                  uploadedName={imageUploadedName}
                   onChange={(file) =>
                     uploadFile(file, setImageUrl, setImageUploading, setImageUploadedName)
                   }
                 />
-              )}
-
-              {/* Attachment picker for NOTES */}
-              {isNotes && (
-                <FilePicker
-                  accept=".pdf,.doc,.docx,.ppt,.pptx,image/*"
-                  label="Attach file (PDF, slides, images…)"
+                <UploadButton
+                  accept=".pdf,.doc,.docx,.ppt,.pptx"
+                  label="Upload File"
+                  icon="📄"
                   uploading={fileUploading}
-                  uploadedFileName={fileUploadedName}
                   uploaded={!!fileUrl}
+                  uploadedName={fileUploadedName}
                   onChange={(file) =>
                     uploadFile(file, setFileUrl, setFileUploading, setFileUploadedName)
                   }
                 />
-              )}
+              </div>
             </>
           )}
 

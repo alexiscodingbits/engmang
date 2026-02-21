@@ -14,6 +14,7 @@ export interface Post {
   moduleYear: number | null
   section: ModuleSection | null
   createdAt: string
+  authorId: string
   author: { name: string; year: number }
   commentCount: number
   voteScore: number
@@ -24,6 +25,8 @@ export interface Post {
 export interface Comment {
   id: string
   body: string
+  isDeleted: boolean
   createdAt: string
+  authorId: string
   author: { name: string; year: number }
 }

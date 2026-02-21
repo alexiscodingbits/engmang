@@ -12,7 +12,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const comments = await prisma.comment.findMany({
     where: { postId },
-    include: { author: { select: { name: true, year: true } } },
+    select: {
+      id: true,
+      body: true,
+      isDeleted: true,
+      createdAt: true,
+      authorId: true,
+      author: { select: { name: true, year: true } },
+    },
     orderBy: { createdAt: 'asc' },
   })
 
@@ -35,7 +42,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const comment = await prisma.comment.create({
     data: { body: body.trim(), authorId: userId, postId },
-    include: { author: { select: { name: true, year: true } } },
+    select: {
+      id: true,
+      body: true,
+      isDeleted: true,
+      createdAt: true,
+      authorId: true,
+      author: { select: { name: true, year: true } },
+    },
   })
 
   return NextResponse.json(comment, { status: 201 })

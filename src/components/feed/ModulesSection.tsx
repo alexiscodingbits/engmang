@@ -62,6 +62,10 @@ export default function ModulesSection() {
     setPosts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
   }
 
+  function handlePostDelete(id: string) {
+    setPosts((prev) => prev.filter((p) => p.id !== id))
+  }
+
   // Client-side filtering
   const filteredPosts = posts.filter((p) => {
     const q = searchQuery.toLowerCase().trim()
@@ -236,7 +240,7 @@ export default function ModulesSection() {
           ) : (
             <div className="space-y-4">
               {filteredPosts.map((post) => (
-                <PostCard key={post.id} post={post} onUpdate={handlePostUpdate} />
+                <PostCard key={post.id} post={post} onUpdate={handlePostUpdate} onDelete={handlePostDelete} />
               ))}
             </div>
           )}

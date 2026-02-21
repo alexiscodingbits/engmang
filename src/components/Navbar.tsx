@@ -2,21 +2,20 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
 export default function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
 
-    // Get initial session
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
 
-    // Subscribe to auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)
     })
@@ -31,6 +30,9 @@ export default function Navbar() {
     router.refresh()
   }
 
+  const isFeed = pathname?.startsWith('/feed') ?? false
+  const isMessages = pathname?.startsWith('/messages') ?? false
+
   return (
     <nav id="tour-navbar" className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
@@ -41,12 +43,36 @@ export default function Navbar() {
         <div className="flex items-center gap-6">
           {user ? (
             <>
-              <Link href="/feed" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                Feed
-              </Link>
-              <Link id="tour-messages" href="/messages" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                Messages
-              </Link>
+              {/* Feed + Messages with sliding active indicator */}
+              <div className="relative flex items-center bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+                {/* Sliding pill */}
+                <div
+                  className="absolute top-0.5 bottom-0.5 rounded-md bg-emerald-500/20 border border-emerald-500/30 transition-all duration-300 ease-in-out"
+                  style={{
+                    left: isFeed ? '2px' : isMessages ? 'calc(50% + 1px)' : '2px',
+                    width: 'calc(50% - 3px)',
+                    opacity: isFeed || isMessages ? 1 : 0,
+                  }}
+                />
+                <Link
+                  href="/feed"
+                  className={`relative z-10 px-4 py-1.5 text-sm font-medium transition-colors ${
+                    isFeed ? 'text-emerald-400' : 'text-zinc-400 hover:text-zinc-200'
+                  }`}
+                >
+                  Feed
+                </Link>
+                <Link
+                  id="tour-messages"
+                  href="/messages"
+                  className={`relative z-10 px-4 py-1.5 text-sm font-medium transition-colors ${
+                    isMessages ? 'text-emerald-400' : 'text-zinc-400 hover:text-zinc-200'
+                  }`}
+                >
+                  Messages
+                </Link>
+              </div>
+
               <Link
                 href="https://buymeacoffee.com/alexmcconnell"
                 target="_blank"
