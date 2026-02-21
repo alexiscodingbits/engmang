@@ -84,7 +84,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                   <p className="text-zinc-600 text-sm italic">This message was deleted.</p>
                 ) : (
                   <>
-                    <div className="flex items-baseline gap-1.5">
+                    <div className="flex items-center gap-1.5 mb-0.5">
                       <span className="text-zinc-300 text-xs font-medium">{c.author.name}</span>
                       <span className="text-zinc-600 text-xs">
                         {yearLabel(c.author.year)} year ·{' '}
@@ -93,9 +93,12 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                           month: 'short',
                         })}
                       </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <p className="flex-1 text-zinc-400 text-sm">{c.body}</p>
                       {currentUserId === c.authorId && (
                         confirmDeleteId === c.id ? (
-                          <span className="ml-auto flex items-center gap-1.5 text-xs">
+                          <span className="flex items-center gap-1.5 text-xs shrink-0 mt-0.5">
                             <span className="text-zinc-500">Delete?</span>
                             <button
                               onClick={() => handleDeleteComment(c.id)}
@@ -113,14 +116,14 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                         ) : (
                           <button
                             onClick={() => setConfirmDeleteId(c.id)}
-                            className="ml-auto text-xs text-zinc-400 hover:text-red-400 transition-colors"
+                            className="shrink-0 mt-0.5 text-zinc-600 hover:text-red-400 transition-colors"
+                            title="Delete comment"
                           >
-                            Delete
+                            🗑️
                           </button>
                         )
                       )}
                     </div>
-                    <p className="text-zinc-400 text-sm mt-0.5">{c.body}</p>
                   </>
                 )}
               </div>
