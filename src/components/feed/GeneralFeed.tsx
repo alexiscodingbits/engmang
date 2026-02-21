@@ -51,6 +51,7 @@ export default function GeneralFeed() {
           ))}
         </div>
         <button
+          id="tour-create-post"
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-sm px-4 py-2 rounded-lg transition-colors"
         >

@@ -38,7 +38,7 @@ export default function PostCard({ post, onUpdate }: Props) {
     ['', '1st', '2nd', '3rd', '4th', '5th'][y] ?? `${y}th`
 
   return (
-    <article className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
+    <article className="tour-post-card bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
       {/* Author + meta */}
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-zinc-950 font-bold text-xs shrink-0">

@@ -32,7 +32,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950">
+    <nav id="tour-navbar" className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight text-white">
           eng<span className="text-emerald-400">mang</span>
@@ -44,7 +44,7 @@ export default function Navbar() {
               <Link href="/feed" className="text-sm text-zinc-400 hover:text-white transition-colors">
                 Feed
               </Link>
-              <Link href="/messages" className="text-sm text-zinc-400 hover:text-white transition-colors">
+              <Link id="tour-messages" href="/messages" className="text-sm text-zinc-400 hover:text-white transition-colors">
                 Messages
               </Link>
               <button
