@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface Props {
@@ -9,13 +8,19 @@ interface Props {
 }
 
 export default function WelcomeClient({ name }: Props) {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   async function handleGetStarted() {
     setLoading(true)
-    await fetch('/api/user/welcome', { method: 'POST' })
-    router.push('/feed')
+    const res = await fetch('/api/user/welcome', { method: 'POST' })
+    if (res.ok) {
+      // Hard navigation bypasses the Next.js router cache, which may have
+      // cached a stale redirect from /feed → /welcome (before hasSeenWelcome
+      // was set). router.push() would replay that cached redirect.
+      window.location.href = '/feed'
+    } else {
+      setLoading(false)
+    }
   }
 
   return (
