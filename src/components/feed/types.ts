@@ -1,5 +1,5 @@
 export type PostType = 'TEXT' | 'IMAGE' | 'LINK' | 'QUESTION'
-export type ModuleSection = 'NOTES' | 'QUESTIONS' | 'UPLOADED_WORK'
+export type ModuleSection = 'NOTES' | 'QUESTIONS'
 
 export interface Post {
   id: string
@@ -9,6 +9,7 @@ export interface Post {
   imageUrl: string | null
   linkUrl: string | null
   fileUrl: string | null
+  noteTag: string | null
   moduleCode: string | null
   moduleYear: number | null
   section: ModuleSection | null

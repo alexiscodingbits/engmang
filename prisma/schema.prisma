@@ -17,7 +17,6 @@ enum PostType {
 enum ModuleSection {
   NOTES
   QUESTIONS
-  UPLOADED_WORK
 }
 
 model User {
@@ -50,6 +49,7 @@ model Post {
   imageUrl    String?
   linkUrl     String?
   fileUrl     String?  // R2-hosted attachment (PDFs, docs, images)
+  noteTag     String?  // Tag for module NOTES section posts
   // Module posts only
   moduleCode  String?
   moduleYear  Int?

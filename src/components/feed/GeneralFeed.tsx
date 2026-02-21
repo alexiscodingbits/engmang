@@ -12,6 +12,7 @@ export default function GeneralFeed() {
   const [sort, setSort] = useState<Sort>('newest')
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const fetchPosts = useCallback(async () => {
     setLoading(true)
@@ -31,10 +32,21 @@ export default function GeneralFeed() {
     setPosts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)))
   }
 
+  const filteredPosts = searchQuery.trim()
+    ? posts.filter((p) => {
+        const q = searchQuery.toLowerCase()
+        return (
+          p.title.toLowerCase().includes(q) ||
+          (p.body?.toLowerCase().includes(q) ?? false) ||
+          p.author.name.toLowerCase().includes(q)
+        )
+      })
+    : posts
+
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex gap-2">
           {(['newest', 'popular'] as Sort[]).map((s) => (
             <button
@@ -59,6 +71,26 @@ export default function GeneralFeed() {
         </button>
       </div>
 
+      {/* Search */}
+      <div className="relative mb-5">
+        <span className="absolute inset-y-0 left-3 flex items-center text-zinc-500 pointer-events-none">🔍</span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search posts or authors…"
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute inset-y-0 right-3 flex items-center text-zinc-500 hover:text-zinc-300 text-lg leading-none"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
       {/* Posts */}
       {loading ? (
         <div className="space-y-4">
@@ -66,15 +98,15 @@ export default function GeneralFeed() {
             <div key={i} className="h-36 bg-zinc-900 rounded-xl animate-pulse border border-zinc-800" />
           ))}
         </div>
-      ) : posts.length === 0 ? (
+      ) : filteredPosts.length === 0 ? (
         <div className="text-center py-16 text-zinc-500">
-          <p className="text-4xl mb-3">📭</p>
-          <p className="font-medium">No posts yet</p>
-          <p className="text-sm mt-1">Be the first to post something!</p>
+          <p className="text-4xl mb-3">{searchQuery ? '🔍' : '📭'}</p>
+          <p className="font-medium">{searchQuery ? 'No posts match your search' : 'No posts yet'}</p>
+          {!searchQuery && <p className="text-sm mt-1">Be the first to post something!</p>}
         </div>
       ) : (
         <div className="space-y-4">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} onUpdate={handlePostUpdate} />
           ))}
         </div>

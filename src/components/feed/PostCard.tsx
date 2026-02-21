@@ -54,9 +54,15 @@ export default function PostCard({ post, onUpdate }: Props) {
             })}
           </span>
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.color}`}>
-          {badge.label}
-        </span>
+        {post.noteTag ? (
+          <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-teal-900 text-teal-300">
+            {post.noteTag}
+          </span>
+        ) : (
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.color}`}>
+            {badge.label}
+          </span>
+        )}
       </div>
 
       {/* Title */}
@@ -70,7 +76,7 @@ export default function PostCard({ post, onUpdate }: Props) {
       )}
 
       {/* Image */}
-      {post.type === 'IMAGE' && post.imageUrl && (
+      {post.imageUrl && (
         <img
           src={post.imageUrl}
           alt={post.title}
@@ -79,7 +85,7 @@ export default function PostCard({ post, onUpdate }: Props) {
       )}
 
       {/* Link */}
-      {post.type === 'LINK' && post.linkUrl && (
+      {post.linkUrl && (
         <a
           href={post.linkUrl}
           target="_blank"
