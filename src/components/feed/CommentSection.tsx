@@ -113,7 +113,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                         ) : (
                           <button
                             onClick={() => setConfirmDeleteId(c.id)}
-                            className="ml-auto text-xs text-zinc-700 hover:text-red-400 transition-colors"
+                            className="ml-auto text-xs text-zinc-400 hover:text-red-400 transition-colors"
                           >
                             Delete
                           </button>

@@ -171,7 +171,7 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
             ) : (
               <button
                 onClick={() => setConfirmDelete(true)}
-                className="text-xs text-zinc-600 hover:text-red-400 transition-colors"
+                className="text-xs text-zinc-400 hover:text-red-400 transition-colors"
               >
                 Delete
               </button>
