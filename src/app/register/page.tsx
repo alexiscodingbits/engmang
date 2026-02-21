@@ -18,10 +18,10 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
 
-    if (!email.endsWith('@tcd.ie')) {
-      setError('You must use a @tcd.ie email address')
-      return
-    }
+    // if (!email.endsWith('@tcd.ie')) {
+    //   setError('You must use a @tcd.ie email address')
+    //   return
+    // }
 
     setLoading(true)
     const supabase = createClient()
