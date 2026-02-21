@@ -103,7 +103,8 @@ model Bookmark {
 
 model Message {
   id         String   @id @default(cuid())
-  body       String
+  body       String?
+  fileUrl    String?
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
 

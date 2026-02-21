@@ -13,7 +13,8 @@ export interface Contact {
 
 export interface Message {
   id: string
-  body: string
+  body: string | null
+  fileUrl: string | null
   senderId: string
   receiverId: string
   createdAt: string
@@ -72,12 +73,12 @@ export default function MessagesClient({ currentUserId, currentUserYear }: Props
       .finally(() => setLoadingMessages(false))
   }, [selectedContact])
 
-  async function sendMessage(body: string) {
-    if (!selectedContact || !body.trim()) return
+  async function sendMessage(body: string, fileUrl?: string) {
+    if (!selectedContact || (!body.trim() && !fileUrl)) return
     const res = await fetch('/api/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ receiverId: selectedContact.id, body }),
+      body: JSON.stringify({ receiverId: selectedContact.id, body: body || undefined, fileUrl }),
     })
     if (res.ok) {
       const message: Message = await res.json()

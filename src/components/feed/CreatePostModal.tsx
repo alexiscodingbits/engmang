@@ -308,8 +308,29 @@ function UploadButton({
   uploadedName: string
   onChange: (file: File) => void
 }) {
+  const [dragOver, setDragOver] = useState(false)
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault()
+    setDragOver(true)
+  }
+  function handleDragLeave() {
+    setDragOver(false)
+  }
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) onChange(file)
+  }
+
   return (
-    <label className="flex-1 cursor-pointer">
+    <label
+      className="flex-1 cursor-pointer"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <input
         type="file"
         accept={accept}
@@ -321,16 +342,18 @@ function UploadButton({
       />
       <div
         className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-          uploaded
+          dragOver
+            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+            : uploaded
             ? 'border-emerald-600 bg-emerald-500/10 text-emerald-400'
             : uploading
             ? 'border-zinc-600 bg-zinc-800 text-zinc-400'
             : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-zinc-200'
         }`}
       >
-        <span>{uploading ? '⏳' : uploaded ? '✅' : icon}</span>
+        <span>{uploading ? '⏳' : uploaded ? '✅' : dragOver ? '📥' : icon}</span>
         <span className="truncate max-w-[120px]">
-          {uploading ? 'Uploading…' : uploaded ? uploadedName : label}
+          {uploading ? 'Uploading…' : uploaded ? uploadedName : dragOver ? 'Drop here' : label}
         </span>
       </div>
     </label>
