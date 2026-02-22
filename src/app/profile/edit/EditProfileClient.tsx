@@ -8,6 +8,8 @@ interface Props {
   initialBio: string
   initialAvatarUrl: string
   initialLinkedInUrl: string
+  initialPhoneNumber: string
+  initialSmsNotifications: boolean
 }
 
 export default function EditProfileClient({
@@ -15,11 +17,15 @@ export default function EditProfileClient({
   initialBio,
   initialAvatarUrl,
   initialLinkedInUrl,
+  initialPhoneNumber,
+  initialSmsNotifications,
 }: Props) {
   const router = useRouter()
   const [bio, setBio] = useState(initialBio)
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl)
   const [linkedInUrl, setLinkedInUrl] = useState(initialLinkedInUrl)
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber)
+  const [smsNotifications, setSmsNotifications] = useState(initialSmsNotifications)
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -65,7 +71,7 @@ export default function EditProfileClient({
     const res = await fetch('/api/user/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bio, avatarUrl, linkedInUrl: sanitiseUrl(linkedInUrl) }),
+      body: JSON.stringify({ bio, avatarUrl, linkedInUrl: sanitiseUrl(linkedInUrl), phoneNumber, smsNotifications }),
     })
     setSaving(false)
     if (res.ok) {
@@ -157,6 +163,40 @@ export default function EditProfileClient({
           className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
+
+      {/* Phone Number */}
+      <div>
+        <label htmlFor="phone" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+          Phone Number <span className="text-slate-400 dark:text-zinc-600">(optional)</span>
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="+353 85 123 4567"
+          className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+        />
+        <p className="text-xs text-slate-400 dark:text-zinc-600 mt-1.5">Used for SMS notifications about important updates.</p>
+      </div>
+
+      {/* SMS Notifications Toggle */}
+      <label className="flex items-center justify-between cursor-pointer">
+        <div>
+          <span className="block text-sm text-slate-700 dark:text-zinc-300">SMS Notifications</span>
+          <span className="block text-xs text-slate-400 dark:text-zinc-600">Receive text messages for important updates</span>
+        </div>
+        <div className="relative">
+          <input
+            type="checkbox"
+            checked={smsNotifications}
+            onChange={(e) => setSmsNotifications(e.target.checked)}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-slate-200 dark:bg-zinc-700 rounded-full peer-checked:bg-emerald-500 transition-colors" />
+          <div className="absolute left-[2px] top-[2px] w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-5 transition-transform" />
+        </div>
+      </label>
 
       {error && (
         <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>

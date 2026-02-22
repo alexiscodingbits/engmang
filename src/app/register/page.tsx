@@ -12,6 +12,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [year, setYear] = useState('1')
   const [isClassRep, setIsClassRep] = useState(false)
+  const [countryCode, setCountryCode] = useState('+353')
+  const [phoneLocal, setPhoneLocal] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -31,7 +33,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
-        data: { name, year: parseInt(year), isClassRep },
+        data: { name, year: parseInt(year), isClassRep, phoneNumber: phoneLocal.trim() ? `${countryCode}${phoneLocal.trim()}` : null },
         emailRedirectTo: `https://www.engmang.ie/auth/callback`,
       },
     })
@@ -122,6 +124,40 @@ export default function RegisterPage() {
               <option value="4">4th Year</option>
               <option value="5">5th Year</option>
             </select>
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+              Phone Number <span className="text-slate-400 dark:text-zinc-600">(optional)</span>
+            </label>
+            <div className="flex gap-2">
+              <select
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                className="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
+              >
+                <option value="+353">🇮🇪 +353</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+39">🇮🇹 +39</option>
+                <option value="+31">🇳🇱 +31</option>
+                <option value="+48">🇵🇱 +48</option>
+                <option value="+86">🇨🇳 +86</option>
+                <option value="+91">🇮🇳 +91</option>
+              </select>
+              <input
+                id="phone"
+                type="tel"
+                value={phoneLocal}
+                onChange={(e) => setPhoneLocal(e.target.value)}
+                placeholder="085 123 4567"
+                className="flex-1 bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              />
+            </div>
+            <p className="text-xs text-slate-400 dark:text-zinc-600 mt-1.5">Used for SMS notifications about important updates.</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">

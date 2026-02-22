@@ -10,7 +10,7 @@ export default async function EditProfilePage() {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { bio: true, avatarUrl: true, linkedInUrl: true },
+    select: { bio: true, avatarUrl: true, linkedInUrl: true, phoneNumber: true, smsNotifications: true },
   })
 
   return (
@@ -23,6 +23,8 @@ export default async function EditProfilePage() {
           initialBio={dbUser?.bio ?? ''}
           initialAvatarUrl={dbUser?.avatarUrl ?? ''}
           initialLinkedInUrl={dbUser?.linkedInUrl ?? ''}
+          initialPhoneNumber={dbUser?.phoneNumber ?? ''}
+          initialSmsNotifications={dbUser?.smsNotifications ?? true}
         />
       </div>
     </main>

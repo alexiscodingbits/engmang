@@ -7,14 +7,20 @@ import { prisma } from '@/lib/prisma'
  * the Prisma User (used for relations) always exists.
  */
 export async function ensureUser(supabaseUser: User) {
+  const meta = supabaseUser.user_metadata ?? {}
+  const phoneNumber = typeof meta.phoneNumber === 'string' && meta.phoneNumber.trim()
+    ? meta.phoneNumber.trim()
+    : null
+
   return prisma.user.upsert({
     where: { id: supabaseUser.id },
     create: {
       id: supabaseUser.id,
       email: supabaseUser.email!,
-      name: supabaseUser.user_metadata?.name ?? supabaseUser.email!.split('@')[0],
-      year: Number(supabaseUser.user_metadata?.year ?? 1),
-      role: supabaseUser.user_metadata?.isClassRep ? 'PENDING_CLASS_REP' : 'USER',
+      name: meta.name ?? supabaseUser.email!.split('@')[0],
+      year: Number(meta.year ?? 1),
+      role: meta.isClassRep ? 'PENDING_CLASS_REP' : 'USER',
+      phoneNumber,
     },
     update: {},
   })
