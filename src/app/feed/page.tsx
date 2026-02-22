@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ensureUser } from '@/lib/supabase/ensure-user'
 import FeedClient from '@/components/feed/FeedClient'
+import { DotPattern } from '@/components/DotPattern'
 
 export default async function FeedPage() {
   const supabase = await createClient()
@@ -18,10 +19,13 @@ export default async function FeedPage() {
   }
 
   return (
-    <main className="min-h-screen pt-20 pb-12">
-      <div className="max-w-3xl mx-auto px-4">
-        <FeedClient showTour={!dbUser?.hasSeenTour} userRole={dbUser.role} />
-      </div>
-    </main>
+    <>
+      <DotPattern className="-z-10" />
+      <main className="min-h-screen pt-20 pb-12">
+        <div className="max-w-3xl mx-auto px-4">
+          <FeedClient showTour={!dbUser?.hasSeenTour} userRole={dbUser.role} />
+        </div>
+      </main>
+    </>
   )
 }
