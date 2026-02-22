@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import UnicornBackground from '@/components/UnicornBackground'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -33,6 +34,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh]">
+      <UnicornBackground />
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-1">Welcome back</h1>
         <p className="text-slate-500 dark:text-slate-500 dark:text-zinc-400 text-sm mb-8">Sign in to your EngMang account</p>

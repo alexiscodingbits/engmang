@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import UnicornBackground from '@/components/UnicornBackground'
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
+      <UnicornBackground />
       <div className="mb-2 text-sm font-medium tracking-widest uppercase text-emerald-400">
         TCD Engineering with Management
       </div>
