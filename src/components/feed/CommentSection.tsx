@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Comment } from './types'
 import { createClient } from '@/lib/supabase/client'
+import { useUserRole } from '@/lib/user-role-context'
 
 interface Props {
   postId: string
@@ -17,6 +18,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const userRole = useUserRole()
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null))
@@ -96,7 +98,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                     </div>
                     <div className="flex items-start gap-2">
                       <p className="flex-1 text-zinc-400 text-sm">{c.body}</p>
-                      {currentUserId === c.authorId && (
+                      {(currentUserId === c.authorId || userRole === 'MASTER') && (
                         confirmDeleteId === c.id ? (
                           <span className="flex items-center gap-1.5 text-xs shrink-0 mt-0.5">
                             <span className="text-zinc-500">Delete?</span>

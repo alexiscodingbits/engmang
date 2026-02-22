@@ -14,6 +14,7 @@ export async function ensureUser(supabaseUser: User) {
       email: supabaseUser.email!,
       name: supabaseUser.user_metadata?.name ?? supabaseUser.email!.split('@')[0],
       year: Number(supabaseUser.user_metadata?.year ?? 1),
+      role: supabaseUser.user_metadata?.isClassRep ? 'PENDING_CLASS_REP' : 'USER',
     },
     update: {},
   })

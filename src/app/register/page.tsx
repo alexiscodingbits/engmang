@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [year, setYear] = useState('1')
+  const [isClassRep, setIsClassRep] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -30,7 +31,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
-        data: { name, year: parseInt(year) },
+        data: { name, year: parseInt(year), isClassRep },
         emailRedirectTo: `https://www.engmang.ie/auth/callback`,
       },
     })
@@ -122,6 +123,16 @@ export default function RegisterPage() {
               <option value="5">5th Year</option>
             </select>
           </div>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isClassRep}
+              onChange={(e) => setIsClassRep(e.target.checked)}
+              className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 accent-emerald-500"
+            />
+            <span className="text-sm text-zinc-400">I am a class rep</span>
+          </label>
 
           <button
             type="submit"

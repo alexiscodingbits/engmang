@@ -12,12 +12,14 @@ export async function DELETE(
 
   const { id: commentId } = await params
 
-  const comment = await prisma.comment.findUnique({
-    where: { id: commentId },
-    select: { authorId: true },
-  })
+  const [comment, caller] = await Promise.all([
+    prisma.comment.findUnique({ where: { id: commentId }, select: { authorId: true } }),
+    prisma.user.findUnique({ where: { id: user.id }, select: { role: true } }),
+  ])
   if (!comment) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (comment.authorId !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (comment.authorId !== user.id && caller?.role !== 'MASTER') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
 
   // Soft delete — preserves the row but hides content in the UI
   await prisma.comment.update({

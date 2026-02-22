@@ -12,9 +12,14 @@ export async function DELETE(
 
   const { id: postId } = await params
 
-  const post = await prisma.post.findUnique({ where: { id: postId }, select: { authorId: true } })
+  const [post, caller] = await Promise.all([
+    prisma.post.findUnique({ where: { id: postId }, select: { authorId: true } }),
+    prisma.user.findUnique({ where: { id: user.id }, select: { role: true } }),
+  ])
   if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (post.authorId !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (post.authorId !== user.id && caller?.role !== 'MASTER') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
 
   await prisma.post.delete({ where: { id: postId } })
 

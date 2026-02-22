@@ -6,6 +6,7 @@ import VoteButtons from './VoteButtons'
 import BookmarkButton from './BookmarkButton'
 import CommentSection from './CommentSection'
 import { createClient } from '@/lib/supabase/client'
+import { useUserRole } from '@/lib/user-role-context'
 
 const TYPE_BADGE: Record<string, { label: string; color: string }> = {
   TEXT: { label: 'Text', color: 'bg-zinc-700 text-zinc-300' },
@@ -26,6 +27,7 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const badge = TYPE_BADGE[post.type] ?? TYPE_BADGE.TEXT
+  const userRole = useUserRole()
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null))
@@ -58,6 +60,7 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
     ['', '1st', '2nd', '3rd', '4th', '5th'][y] ?? `${y}th`
 
   const isAuthor = currentUserId === post.authorId
+  const canDelete = isAuthor || userRole === 'MASTER'
 
   return (
     <article className="tour-post-card bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
@@ -150,7 +153,7 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
         </button>
 
         <div className="ml-auto flex items-center gap-3">
-          {isAuthor && (
+          {canDelete && (
             confirmDelete ? (
               <div className="flex items-center gap-2">
                 <span className="text-zinc-500 text-xs">Delete post?</span>

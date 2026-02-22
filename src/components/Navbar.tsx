@@ -10,14 +10,25 @@ export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
+  const [role, setRole] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
 
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      if (data.user) {
+        fetch('/api/user/me').then((r) => r.json()).then((d) => setRole(d.role ?? null))
+      }
+    })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        fetch('/api/user/me').then((r) => r.json()).then((d) => setRole(d.role ?? null))
+      } else {
+        setRole(null)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -32,6 +43,8 @@ export default function Navbar() {
 
   const isFeed = pathname?.startsWith('/feed') ?? false
   const isMessages = pathname?.startsWith('/messages') ?? false
+  const isAdmin = pathname?.startsWith('/admin') ?? false
+  const isManageUsers = pathname?.startsWith('/manage-users') ?? false
 
   return (
     <nav id="tour-navbar" className="border-b border-zinc-800 bg-zinc-950">
@@ -64,6 +77,32 @@ export default function Navbar() {
               >
                 Messages
               </Link>
+
+              {role === 'MASTER' && (
+                <Link
+                  href="/admin"
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isAdmin
+                      ? 'bg-emerald-600 text-white'
+                      : 'text-zinc-400 hover:text-zinc-200'
+                  }`}
+                >
+                  Admin
+                </Link>
+              )}
+
+              {(role === 'CLASS_REP' || role === 'MASTER') && (
+                <Link
+                  href="/manage-users"
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    isManageUsers
+                      ? 'bg-emerald-600 text-white'
+                      : 'text-zinc-400 hover:text-zinc-200'
+                  }`}
+                >
+                  Users
+                </Link>
+              )}
 
               <Link
                 href="https://buymeacoffee.com/alexmcconnell"

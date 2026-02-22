@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  MASTER
+  CLASS_REP
+  PENDING_CLASS_REP
+  USER
+}
+
 enum PostType {
   TEXT
   IMAGE
@@ -24,6 +31,7 @@ model User {
   name             String
   email            String     @unique
   year             Int        @default(1)
+  role             Role       @default(USER)
   bio              String?
   avatarUrl        String?
   hasSeenWelcome   Boolean    @default(false)
@@ -57,7 +65,7 @@ model Post {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  author      User           @relation(fields: [authorId], references: [id])
+  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   comments    Comment[]
   votes       Vote[]
@@ -70,7 +78,7 @@ model Comment {
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
@@ -81,7 +89,7 @@ model Vote {
   value     Int      // 1 = upvote, -1 = downvote
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
@@ -93,7 +101,7 @@ model Bookmark {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
@@ -108,9 +116,9 @@ model Message {
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   senderId   String
-  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
   receiverId String
 }
 
@@ -119,8 +127,8 @@ model Favorite {
   targetId  String
   createdAt DateTime @default(now())
 
-  user      User     @relation("UserFavorites", fields: [userId], references: [id])
-  target    User     @relation("FavoritedBy", fields: [targetId], references: [id])
+  user      User     @relation("UserFavorites", fields: [userId], references: [id], onDelete: Cascade)
+  target    User     @relation("FavoritedBy", fields: [targetId], references: [id], onDelete: Cascade)
 
   @@id([userId, targetId])
 }
