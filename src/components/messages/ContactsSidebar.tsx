@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import type { Contact } from './MessagesClient'
 
 interface Props {
@@ -137,9 +138,13 @@ function ContactRow({
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0">
+        <Link
+          href={`/profile/${contact.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0 hover:bg-emerald-700 transition-colors"
+        >
           {contact.name.charAt(0).toUpperCase()}
-        </div>
+        </Link>
         <span className="text-sm truncate">{contact.name}</span>
       </div>
       <button

@@ -9,6 +9,7 @@ export interface Post {
   imageUrl: string | null
   linkUrl: string | null
   fileUrl: string | null
+  isAnonymous: boolean
   noteTag: string | null
   moduleCode: string | null
   moduleYear: number | null

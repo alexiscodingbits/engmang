@@ -25,6 +25,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
   const [linkUrl, setLinkUrl] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [fileUrl, setFileUrl] = useState('')
+  const [isAnonymous, setIsAnonymous] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -97,6 +98,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
           imageUrl: imageUrl || undefined,
           linkUrl: linkUrl.trim() || undefined,
           fileUrl: fileUrl || undefined,
+          isAnonymous,
         }
       : {
           title,
@@ -190,6 +192,16 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                   }
                 />
               </div>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(e.target.checked)}
+                  className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 accent-emerald-500"
+                />
+                <span className="text-sm text-zinc-400">Post anonymously</span>
+              </label>
             </>
           ) : (
             /* ── Module post form (unified) ── */

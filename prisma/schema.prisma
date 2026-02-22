@@ -34,6 +34,7 @@ model User {
   role             Role       @default(USER)
   bio              String?
   avatarUrl        String?
+  linkedInUrl      String?
   hasSeenWelcome   Boolean    @default(false)
   hasSeenTour      Boolean    @default(false)
   createdAt        DateTime   @default(now())
@@ -57,6 +58,7 @@ model Post {
   imageUrl    String?
   linkUrl     String?
   fileUrl     String?  // R2-hosted attachment (PDFs, docs, images)
+  isAnonymous Boolean        @default(false)
   noteTag     String?  // Tag for module NOTES section posts
   // Module posts only
   moduleCode  String?

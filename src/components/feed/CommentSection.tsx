@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import type { Comment } from './types'
 import { createClient } from '@/lib/supabase/client'
 import { useUserRole } from '@/lib/user-role-context'
@@ -87,7 +88,12 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                 ) : (
                   <>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="text-zinc-300 text-xs font-medium">{c.author.name}</span>
+                      <Link
+                        href={`/profile/${c.authorId}`}
+                        className="text-zinc-300 text-xs font-medium hover:text-emerald-400 transition-colors"
+                      >
+                        {c.author.name}
+                      </Link>
                       <span className="text-zinc-600 text-xs">
                         {yearLabel(c.author.year)} year ·{' '}
                         {new Date(c.createdAt).toLocaleDateString('en-IE', {

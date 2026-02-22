@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   const [contacts, favorites] = await Promise.all([
     prisma.user.findMany({
       where: { year: targetYear, id: { not: user.id } },
-      select: { id: true, name: true, year: true },
+      select: { id: true, name: true, year: true, linkedInUrl: true },
       orderBy: { name: 'asc' },
     }),
     prisma.favorite.findMany({

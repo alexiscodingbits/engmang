@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import type { Post } from './types'
 import VoteButtons from './VoteButtons'
 import BookmarkButton from './BookmarkButton'
@@ -61,16 +62,37 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
 
   const isAuthor = currentUserId === post.authorId
   const canDelete = isAuthor || userRole === 'MASTER'
+  const isMaster = userRole === 'MASTER'
+
+  // Author display: anonymous posts show "Anonymous", MASTER also sees real name subtly
+  const displayName = post.isAnonymous ? 'Anonymous' : post.author.name
+  const displayInitial = post.isAnonymous ? '?' : post.author.name.charAt(0).toUpperCase()
 
   return (
     <article className="tour-post-card bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
       {/* Author + meta */}
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-zinc-950 font-bold text-xs shrink-0">
-          {post.author.name.charAt(0).toUpperCase()}
+          {displayInitial}
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-zinc-200 text-sm font-medium">{post.author.name}</span>
+          {post.isAnonymous ? (
+            <span className="text-zinc-400 text-sm font-medium">
+              Anonymous
+              {isMaster && (
+                <span className="ml-2 text-zinc-600 text-xs font-normal italic">
+                  (visible to admin: {post.author.name})
+                </span>
+              )}
+            </span>
+          ) : (
+            <Link
+              href={`/profile/${post.authorId}`}
+              className="text-zinc-200 text-sm font-medium hover:text-emerald-400 transition-colors"
+            >
+              {displayName}
+            </Link>
+          )}
           <span className="text-zinc-500 text-xs ml-2">
             {yearLabel(post.author.year)} year ·{' '}
             {new Date(post.createdAt).toLocaleDateString('en-IE', {

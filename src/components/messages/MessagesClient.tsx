@@ -9,6 +9,7 @@ export interface Contact {
   id: string
   name: string
   year: number
+  linkedInUrl?: string | null
 }
 
 export interface Message {
@@ -24,10 +25,11 @@ export interface Message {
 interface Props {
   currentUserId: string
   currentUserYear: number
+  initialContact?: Contact | null
 }
 
-export default function MessagesClient({ currentUserId, currentUserYear }: Props) {
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
+export default function MessagesClient({ currentUserId, currentUserYear, initialContact }: Props) {
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(initialContact ?? null)
   const [messages, setMessages] = useState<Message[]>([])
   const [loadingMessages, setLoadingMessages] = useState(false)
   const selectedContactRef = useRef<Contact | null>(null)
