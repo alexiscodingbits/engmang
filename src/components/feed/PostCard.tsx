@@ -88,9 +88,17 @@ export default function PostCard({ post, onUpdate, onDelete }: Props) {
 
       {/* Author + meta */}
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-zinc-950 font-bold text-xs shrink-0">
-          {displayInitial}
-        </div>
+        {!post.isAnonymous && post.author.avatarUrl ? (
+          <img
+            src={post.author.avatarUrl}
+            alt={post.author.name}
+            className="w-8 h-8 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-zinc-950 font-bold text-xs shrink-0">
+            {displayInitial}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           {post.isAnonymous ? (
             <span className="text-slate-600 dark:text-zinc-400 text-sm font-medium">

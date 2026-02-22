@@ -17,7 +17,7 @@ export interface Post {
   section: ModuleSection | null
   createdAt: string
   authorId: string
-  author: { name: string; year: number }
+  author: { name: string; year: number; avatarUrl: string | null }
   commentCount: number
   voteScore: number
   userVote: 1 | -1 | null
@@ -30,5 +30,5 @@ export interface Comment {
   isDeleted: boolean
   createdAt: string
   authorId: string
-  author: { name: string; year: number }
+  author: { name: string; year: number; avatarUrl: string | null }
 }

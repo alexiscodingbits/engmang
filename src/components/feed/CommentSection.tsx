@@ -79,9 +79,17 @@ export default function CommentSection({ postId, onCountChange }: Props) {
           )}
           {comments.map((c) => (
             <div key={c.id} className="flex gap-3">
-              <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center text-slate-500 dark:text-zinc-300 font-bold text-xs shrink-0 mt-0.5">
-                {c.isDeleted ? '?' : c.author.name.charAt(0).toUpperCase()}
-              </div>
+              {!c.isDeleted && c.author.avatarUrl ? (
+                <img
+                  src={c.author.avatarUrl}
+                  alt={c.author.name}
+                  className="w-6 h-6 rounded-full object-cover shrink-0 mt-0.5"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center text-slate-500 dark:text-zinc-300 font-bold text-xs shrink-0 mt-0.5">
+                  {c.isDeleted ? '?' : c.author.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 {c.isDeleted ? (
                   <p className="text-slate-400 dark:text-zinc-600 text-sm italic">This message was deleted.</p>

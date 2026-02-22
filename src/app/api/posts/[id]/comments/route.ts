@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       isDeleted: true,
       createdAt: true,
       authorId: true,
-      author: { select: { name: true, year: true } },
+      author: { select: { name: true, year: true, avatarUrl: true } },
     },
     orderBy: { createdAt: 'asc' },
   })
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       isDeleted: true,
       createdAt: true,
       authorId: true,
-      author: { select: { name: true, year: true } },
+      author: { select: { name: true, year: true, avatarUrl: true } },
     },
   })
 
