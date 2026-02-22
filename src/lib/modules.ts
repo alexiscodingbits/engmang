@@ -23,7 +23,7 @@ const modulesByYear: Record<number, Module[]> = {
     { code: 'CHU11E05', name: 'Chemistry' },
     { code: 'MAU11E01', name: 'Engineering Mathematics I' },
     { code: 'MEU11EM1', name: 'Introduction to Manufacturing' },
-    { code: 'CEU11E20', name: 'Materials Applications' },
+    { code: 'CEU11E20', name: 'Physics' },
     { code: 'MEU11E16', name: 'Materials Science' },
     { code: 'CEU11E07', name: 'Mechanics' },
     { code: 'EEU11E06', name: 'Electrical Engineering' },
