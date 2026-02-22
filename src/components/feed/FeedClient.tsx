@@ -30,14 +30,14 @@ export default function FeedClient({ showTour = false, userRole = 'USER' }: Prop
     <UserRoleContext.Provider value={userRole}>
       <div>
         {/* Tab switcher */}
-        <div className="flex gap-1 mb-6 bg-zinc-900 rounded-xl p-1 border border-zinc-800">
+        <div className="flex gap-1 mb-6 bg-slate-100 dark:bg-zinc-900 rounded-xl p-1 border border-slate-200 dark:border-zinc-800">
           <button
             id="tour-general-feed-tab"
             onClick={() => setActiveTab('general')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               activeTab === 'general'
                 ? 'bg-emerald-500 text-zinc-950'
-                : 'text-zinc-400 hover:text-zinc-200'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
             }`}
           >
             General Feed
@@ -48,7 +48,7 @@ export default function FeedClient({ showTour = false, userRole = 'USER' }: Prop
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               activeTab === 'modules'
                 ? 'bg-emerald-500 text-zinc-950'
-                : 'text-zinc-400 hover:text-zinc-200'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
             }`}
           >
             Modules

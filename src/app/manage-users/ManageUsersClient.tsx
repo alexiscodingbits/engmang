@@ -48,7 +48,7 @@ export default function ManageUsersClient({ users }: Props) {
   return (
     <div>
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
           {error}
         </div>
       )}
@@ -57,22 +57,22 @@ export default function ManageUsersClient({ users }: Props) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search by name or email…"
-        className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors mb-4"
+        className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors mb-4"
       />
       <div className="space-y-3">
         {filtered.length === 0 && (
-          <p className="text-zinc-500 text-sm">No users found.</p>
+          <p className="text-slate-400 dark:text-zinc-500 text-sm">No users found.</p>
         )}
         {filtered.map((u) => (
-          <div key={u.id} className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3">
+          <div key={u.id} className="flex items-center justify-between bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3">
             <div>
-              <p className="text-zinc-200 text-sm font-medium">{u.name}</p>
-              <p className="text-zinc-500 text-xs">{u.email} · {YEAR_LABELS[u.year] ?? u.year} year</p>
+              <p className="text-slate-800 dark:text-zinc-200 text-sm font-medium">{u.name}</p>
+              <p className="text-slate-400 dark:text-zinc-500 text-xs">{u.email} · {YEAR_LABELS[u.year] ?? u.year} year</p>
             </div>
             <button
               onClick={() => removeUser(u.id)}
               disabled={loadingId === u.id}
-              className="px-3 py-1.5 bg-zinc-700 hover:bg-red-900 text-zinc-400 hover:text-red-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+              className="px-3 py-1.5 bg-slate-200 dark:bg-zinc-700 hover:bg-red-100 dark:hover:bg-red-900 text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
             >
               {loadingId === u.id ? 'Removing…' : 'Remove'}
             </button>

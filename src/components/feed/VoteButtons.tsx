@@ -49,8 +49,8 @@ export default function VoteButtons({ postId, voteScore, userVote, onChange }: P
         disabled={loading}
         className={`p-1 rounded transition-colors ${
           userVote === 1
-            ? 'text-emerald-400'
-            : 'text-zinc-500 hover:text-emerald-400'
+            ? 'text-emerald-500 dark:text-emerald-400'
+            : 'text-slate-400 dark:text-zinc-500 hover:text-emerald-500 dark:hover:text-emerald-400'
         }`}
         aria-label="Upvote"
       >
@@ -59,10 +59,10 @@ export default function VoteButtons({ postId, voteScore, userVote, onChange }: P
       <span
         className={`text-sm font-semibold min-w-[1.5rem] text-center tabular-nums ${
           voteScore > 0
-            ? 'text-emerald-400'
+            ? 'text-emerald-500 dark:text-emerald-400'
             : voteScore < 0
-            ? 'text-red-400'
-            : 'text-zinc-500'
+            ? 'text-red-500 dark:text-red-400'
+            : 'text-slate-400 dark:text-zinc-500'
         }`}
       >
         {voteScore}
@@ -72,8 +72,8 @@ export default function VoteButtons({ postId, voteScore, userVote, onChange }: P
         disabled={loading}
         className={`p-1 rounded transition-colors ${
           userVote === -1
-            ? 'text-red-400'
-            : 'text-zinc-500 hover:text-red-400'
+            ? 'text-red-500 dark:text-red-400'
+            : 'text-slate-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400'
         }`}
         aria-label="Downvote"
       >

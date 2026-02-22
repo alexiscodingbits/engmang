@@ -67,7 +67,7 @@ export default function ModulesSection() {
   }
 
   // Client-side filtering
-  const filteredPosts = posts.filter((p) => {
+  const basePosts = posts.filter((p) => {
     const q = searchQuery.toLowerCase().trim()
     const matchesSearch = !q || (
       section === 'NOTES'
@@ -82,11 +82,13 @@ export default function ModulesSection() {
     return matchesSearch && matchesTag
   })
 
+  const filteredPosts = [...basePosts].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+
   return (
     <div>
       {/* Year selector */}
       <div className="mb-4">
-        <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-2">Year</p>
+        <p className="text-slate-400 dark:text-zinc-500 text-xs font-medium uppercase tracking-wider mb-2">Year</p>
         <div className="flex gap-2">
           {[1, 2, 3, 4, 5].map((y) => (
             <button
@@ -95,7 +97,7 @@ export default function ModulesSection() {
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors border ${
                 year === y
                   ? 'bg-emerald-500 border-emerald-500 text-zinc-950'
-                  : 'border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'
+                  : 'border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hover:border-slate-300 dark:hover:border-zinc-600'
               }`}
             >
               {y}
@@ -106,7 +108,7 @@ export default function ModulesSection() {
 
       {/* Module selector — name only, no code shown */}
       <div className="mb-5">
-        <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider mb-2">Module</p>
+        <p className="text-slate-400 dark:text-zinc-500 text-xs font-medium uppercase tracking-wider mb-2">Module</p>
         <div className="grid grid-cols-2 gap-2">
           {modules.map((m) => (
             <button
@@ -114,8 +116,8 @@ export default function ModulesSection() {
               onClick={() => setModuleCode(m.code)}
               className={`text-left px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                 moduleCode === m.code
-                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300'
-                  : 'border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                  ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300'
+                  : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 hover:text-slate-800 dark:hover:text-zinc-200'
               }`}
             >
               {m.name}
@@ -128,23 +130,23 @@ export default function ModulesSection() {
       {moduleCode ? (
         <>
           {/* Module name + subtle code header */}
-          <div className="mb-4 pb-3 border-b border-zinc-800">
-            <h2 className="text-zinc-100 font-semibold text-base leading-snug">
+          <div className="mb-4 pb-3 border-b border-slate-200 dark:border-zinc-800">
+            <h2 className="text-slate-900 dark:text-zinc-100 font-semibold text-base leading-snug">
               {selectedModule?.name}
             </h2>
-            <span className="text-zinc-600 text-xs font-mono">{moduleCode}</span>
+            <span className="text-slate-400 dark:text-zinc-600 text-xs font-mono">{moduleCode}</span>
           </div>
 
           {/* Section tabs */}
-          <div className="flex gap-1 mb-4 bg-zinc-900 rounded-xl p-1 border border-zinc-800">
+          <div className="flex gap-1 mb-4 bg-slate-100 dark:bg-zinc-900 rounded-xl p-1 border border-slate-200 dark:border-zinc-800">
             {SECTIONS.map((s) => (
               <button
                 key={s.value}
                 onClick={() => setSection(s.value)}
                 className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
                   section === s.value
-                    ? 'bg-zinc-700 text-zinc-100'
-                    : 'text-zinc-500 hover:text-zinc-300'
+                    ? 'bg-white dark:bg-zinc-700 text-slate-800 dark:text-zinc-100 shadow-sm'
+                    : 'text-slate-400 dark:text-zinc-500 hover:text-slate-700 dark:hover:text-zinc-300'
                 }`}
               >
                 {s.label}
@@ -158,7 +160,7 @@ export default function ModulesSection() {
               <select
                 value={tagFilter}
                 onChange={(e) => setTagFilter(e.target.value)}
-                className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500"
+                className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-slate-700 dark:text-zinc-300 focus:outline-none focus:border-emerald-500"
               >
                 <option value="All">All tags</option>
                 {NOTE_TAGS.map((tag) => (
@@ -170,7 +172,7 @@ export default function ModulesSection() {
 
           {/* Search bar */}
           <div className="relative mb-4">
-            <span className="absolute inset-y-0 left-3 flex items-center text-zinc-500 pointer-events-none">🔍</span>
+            <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 dark:text-zinc-500 pointer-events-none">🔍</span>
             <input
               type="text"
               value={searchQuery}
@@ -180,12 +182,12 @@ export default function ModulesSection() {
                   ? 'Search notes or tags…'
                   : 'Search questions or authors…'
               }
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+              className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-800 dark:text-zinc-200 placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-3 flex items-center text-zinc-500 hover:text-zinc-300 text-lg leading-none"
+                className="absolute inset-y-0 right-3 flex items-center text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 text-lg leading-none"
               >
                 ×
               </button>
@@ -201,8 +203,8 @@ export default function ModulesSection() {
                   onClick={() => setSort(s)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     sort === s
-                      ? 'bg-zinc-700 text-zinc-100'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-slate-200 dark:bg-zinc-700 text-slate-800 dark:text-zinc-100'
+                      : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
                   }`}
                 >
                   {s === 'newest' ? 'Newest' : 'Popular'}
@@ -220,11 +222,11 @@ export default function ModulesSection() {
           {loading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-36 bg-zinc-900 rounded-xl animate-pulse border border-zinc-800" />
+                <div key={i} className="h-36 bg-slate-100 dark:bg-zinc-900 rounded-xl animate-pulse border border-slate-200 dark:border-zinc-800" />
               ))}
             </div>
           ) : filteredPosts.length === 0 ? (
-            <div className="text-center py-14 text-zinc-500">
+            <div className="text-center py-14 text-slate-400 dark:text-zinc-500">
               <p className="text-3xl mb-3">
                 {searchQuery || tagFilter !== 'All' ? '🔍' : section === 'NOTES' ? '📄' : '❓'}
               </p>
@@ -246,9 +248,9 @@ export default function ModulesSection() {
           )}
         </>
       ) : (
-        <div className="text-center py-14 text-zinc-600">
+        <div className="text-center py-14 text-slate-400 dark:text-zinc-600">
           <p className="text-3xl mb-3">📚</p>
-          <p className="font-medium text-zinc-500">Select a module to get started</p>
+          <p className="font-medium text-slate-400 dark:text-zinc-500">Select a module to get started</p>
         </div>
       )}
 

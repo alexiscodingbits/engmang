@@ -50,6 +50,7 @@ export async function GET(req: NextRequest) {
       linkUrl: post.linkUrl,
       fileUrl: post.fileUrl,
       isAnonymous: post.isAnonymous,
+      isPinned: post.isPinned,
       noteTag: post.noteTag,
       moduleCode: post.moduleCode,
       moduleYear: post.moduleYear,
@@ -67,6 +68,9 @@ export async function GET(req: NextRequest) {
   if (sort === 'popular') {
     shaped.sort((a, b) => b.voteScore - a.voteScore)
   }
+
+  // Pinned posts always float to top regardless of sort
+  shaped.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
 
   return NextResponse.json(shaped)
 }
@@ -119,6 +123,7 @@ export async function POST(req: NextRequest) {
     linkUrl: post.linkUrl,
     fileUrl: post.fileUrl,
     isAnonymous: post.isAnonymous,
+    isPinned: post.isPinned,
     noteTag: post.noteTag,
     moduleCode: post.moduleCode,
     moduleYear: post.moduleYear,

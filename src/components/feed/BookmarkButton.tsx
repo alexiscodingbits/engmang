@@ -31,7 +31,7 @@ export default function BookmarkButton({ postId, isBookmarked, onChange }: Props
       disabled={loading}
       aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
       className={`text-xl transition-colors ${
-        isBookmarked ? 'text-emerald-400' : 'text-zinc-600 hover:text-zinc-300'
+        isBookmarked ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-300 dark:text-zinc-600 hover:text-slate-500 dark:hover:text-zinc-300'
       }`}
     >
       {isBookmarked ? '★' : '☆'}

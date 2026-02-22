@@ -10,6 +10,7 @@ export interface Post {
   linkUrl: string | null
   fileUrl: string | null
   isAnonymous: boolean
+  isPinned: boolean
   noteTag: string | null
   moduleCode: string | null
   moduleYear: number | null

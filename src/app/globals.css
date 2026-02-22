@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
 body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.dark body {
   background-color: #09090b;
   color: #fafafa;
 }

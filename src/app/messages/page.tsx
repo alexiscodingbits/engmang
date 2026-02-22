@@ -26,7 +26,7 @@ export default async function MessagesPage({ searchParams }: Props) {
   ])
 
   return (
-    <div className="flex h-[75vh] min-h-[500px] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
+    <div className="flex h-[75vh] min-h-[500px] bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border border-slate-200 dark:border-zinc-800">
       <MessagesClient
         currentUserId={user.id}
         currentUserYear={dbUser?.year ?? 1}

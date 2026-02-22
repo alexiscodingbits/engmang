@@ -13,6 +13,25 @@ export default function Navbar() {
   const [role, setRole] = useState<string | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [isDark, setIsDark] = useState(true)
+
+  // Sync isDark with the actual HTML class (set by inline script before hydration)
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'))
+  }, [])
+
+  function toggleTheme() {
+    const html = document.documentElement
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+      setIsDark(false)
+    } else {
+      html.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+      setIsDark(true)
+    }
+  }
 
   useEffect(() => {
     const supabase = createClient()
@@ -63,12 +82,12 @@ export default function Navbar() {
   const isManageUsers = pathname?.startsWith('/manage-users') ?? false
 
   return (
-    <nav id="tour-navbar" className="border-b border-zinc-800 bg-zinc-950">
+    <nav id="tour-navbar" className="border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
       <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
         {/* Left: logo + avatar */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-xl font-bold tracking-tight text-white">
-            eng<span className="text-emerald-400">mang</span>
+          <Link href="/" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            eng<span className="text-emerald-500 dark:text-emerald-400">mang</span>
           </Link>
 
           {user && (
@@ -81,7 +100,7 @@ export default function Navbar() {
                 <img
                   src={avatarUrl}
                   alt={userName ?? 'Profile'}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-zinc-700 group-hover:border-emerald-500 transition-colors"
+                  className="w-8 h-8 rounded-full object-cover border-2 border-slate-300 dark:border-zinc-700 group-hover:border-emerald-500 transition-colors"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold border-2 border-transparent group-hover:border-emerald-400 transition-colors">
@@ -94,6 +113,15 @@ export default function Navbar() {
 
         {/* Right: nav links */}
         <div className="flex items-center gap-6">
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200 transition-colors text-lg leading-none"
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
+
           {user ? (
             <>
               <Link
@@ -101,7 +129,7 @@ export default function Navbar() {
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   isFeed
                     ? 'bg-emerald-600 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
                 }`}
               >
                 Feed
@@ -112,7 +140,7 @@ export default function Navbar() {
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   isMessages
                     ? 'bg-emerald-600 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
                 }`}
               >
                 Messages
@@ -124,7 +152,7 @@ export default function Navbar() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     isAdmin
                       ? 'bg-emerald-600 text-white'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
                   }`}
                 >
                   Admin
@@ -137,7 +165,7 @@ export default function Navbar() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     isManageUsers
                       ? 'bg-emerald-600 text-white'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
                   }`}
                 >
                   Users
@@ -155,14 +183,14 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={handleSignOut}
-                className="text-sm text-zinc-500 hover:text-white transition-colors"
+                className="text-sm text-slate-400 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-white transition-colors"
               >
                 Sign out
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="text-sm text-zinc-400 hover:text-white transition-colors">
+              <Link href="/login" className="text-sm text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 Log in
               </Link>
               <Link

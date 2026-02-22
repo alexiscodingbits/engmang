@@ -65,36 +65,36 @@ export default function CommentSection({ postId, onCountChange }: Props) {
     ['', '1st', '2nd', '3rd', '4th', '5th'][y] ?? `${y}th`
 
   return (
-    <div className="mt-4 pt-4 border-t border-zinc-800">
+    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
       {loading ? (
         <div className="space-y-2">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="h-10 bg-zinc-800 rounded-lg animate-pulse" />
+            <div key={i} className="h-10 bg-slate-100 dark:bg-zinc-800 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : (
         <div className="space-y-3 mb-4">
           {comments.length === 0 && (
-            <p className="text-zinc-600 text-sm">No comments yet.</p>
+            <p className="text-slate-400 dark:text-zinc-600 text-sm">No comments yet.</p>
           )}
           {comments.map((c) => (
             <div key={c.id} className="flex gap-3">
-              <div className="w-6 h-6 rounded-full bg-zinc-700 flex items-center justify-center text-zinc-300 font-bold text-xs shrink-0 mt-0.5">
+              <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center text-slate-500 dark:text-zinc-300 font-bold text-xs shrink-0 mt-0.5">
                 {c.isDeleted ? '?' : c.author.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 {c.isDeleted ? (
-                  <p className="text-zinc-600 text-sm italic">This message was deleted.</p>
+                  <p className="text-slate-400 dark:text-zinc-600 text-sm italic">This message was deleted.</p>
                 ) : (
                   <>
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <Link
                         href={`/profile/${c.authorId}`}
-                        className="text-zinc-300 text-xs font-medium hover:text-emerald-400 transition-colors"
+                        className="text-slate-700 dark:text-zinc-300 text-xs font-medium hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                       >
                         {c.author.name}
                       </Link>
-                      <span className="text-zinc-600 text-xs">
+                      <span className="text-slate-400 dark:text-zinc-600 text-xs">
                         {yearLabel(c.author.year)} year ·{' '}
                         {new Date(c.createdAt).toLocaleDateString('en-IE', {
                           day: 'numeric',
@@ -103,20 +103,20 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                       </span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <p className="flex-1 text-zinc-400 text-sm">{c.body}</p>
+                      <p className="flex-1 text-slate-600 dark:text-zinc-400 text-sm">{c.body}</p>
                       {(currentUserId === c.authorId || userRole === 'MASTER') && (
                         confirmDeleteId === c.id ? (
                           <span className="flex items-center gap-1.5 text-xs shrink-0 mt-0.5">
-                            <span className="text-zinc-500">Delete?</span>
+                            <span className="text-slate-400 dark:text-zinc-500">Delete?</span>
                             <button
                               onClick={() => handleDeleteComment(c.id)}
-                              className="text-red-400 hover:text-red-300 font-medium transition-colors"
+                              className="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 font-medium transition-colors"
                             >
                               Yes
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                              className="text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors"
                             >
                               No
                             </button>
@@ -124,7 +124,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
                         ) : (
                           <button
                             onClick={() => setConfirmDeleteId(c.id)}
-                            className="shrink-0 mt-0.5 text-zinc-600 hover:text-red-400 transition-colors"
+                            className="shrink-0 mt-0.5 text-slate-300 dark:text-zinc-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                             title="Delete comment"
                           >
                             🗑️
@@ -148,7 +148,7 @@ export default function CommentSection({ postId, onCountChange }: Props) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Write a comment…"
           rows={1}
-          className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
+          className="flex-1 bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-slate-800 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
         />
         <button
           type="submit"

@@ -50,14 +50,14 @@ export default function ContactsSidebar({ currentUserYear, selectedContact, onSe
   const others = contacts.filter((c) => !favoriteIds.has(c.id))
 
   return (
-    <div className="w-64 flex-shrink-0 border-r border-zinc-800 flex flex-col">
+    <div className="w-64 flex-shrink-0 border-r border-slate-200 dark:border-zinc-800 flex flex-col">
       {/* Year selector */}
-      <div className="p-4 border-b border-zinc-800">
-        <label className="text-xs text-zinc-500 uppercase tracking-wider mb-2 block">Year</label>
+      <div className="p-4 border-b border-slate-200 dark:border-zinc-800">
+        <label className="text-xs text-slate-400 dark:text-zinc-500 uppercase tracking-wider mb-2 block">Year</label>
         <select
           value={year}
           onChange={(e) => setYear(parseInt(e.target.value))}
-          className="w-full bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          className="w-full bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-800 dark:text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
         >
           {[1, 2, 3, 4, 5].map((y) => (
             <option key={y} value={y}>Year {y}</option>
@@ -68,13 +68,13 @@ export default function ContactsSidebar({ currentUserYear, selectedContact, onSe
       {/* Contact list */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="p-4 text-sm text-zinc-500">Loading...</div>
+          <div className="p-4 text-sm text-slate-400 dark:text-zinc-500">Loading...</div>
         ) : (
           <>
             {/* Favourites section */}
             {favorites.length > 0 && (
               <div>
-                <div className="px-4 pt-4 pb-1 text-xs text-zinc-500 uppercase tracking-wider">
+                <div className="px-4 pt-4 pb-1 text-xs text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
                   Favourites
                 </div>
                 {favorites.map((contact) => (
@@ -92,11 +92,11 @@ export default function ContactsSidebar({ currentUserYear, selectedContact, onSe
 
             {/* All students in selected year */}
             <div>
-              <div className="px-4 pt-4 pb-1 text-xs text-zinc-500 uppercase tracking-wider">
+              <div className="px-4 pt-4 pb-1 text-xs text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
                 Year {year} Students
               </div>
               {others.length === 0 ? (
-                <div className="px-4 py-2 text-sm text-zinc-600">No students found</div>
+                <div className="px-4 py-2 text-sm text-slate-400 dark:text-zinc-600">No students found</div>
               ) : (
                 others.map((contact) => (
                   <ContactRow
@@ -134,14 +134,14 @@ function ContactRow({
     <div
       onClick={onSelect}
       className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors ${
-        isSelected ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:bg-zinc-800/50'
+        isSelected ? 'bg-slate-100 dark:bg-zinc-800 text-slate-900 dark:text-white' : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/50'
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
         <Link
           href={`/profile/${contact.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0 hover:bg-emerald-700 transition-colors"
+          className="w-8 h-8 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center text-sm font-semibold text-slate-700 dark:text-white flex-shrink-0 hover:bg-emerald-600 hover:text-white transition-colors"
         >
           {contact.name.charAt(0).toUpperCase()}
         </Link>
@@ -150,7 +150,7 @@ function ContactRow({
       <button
         onClick={onToggleFavorite}
         className={`flex-shrink-0 text-base leading-none transition-colors ${
-          isFavorite ? 'text-emerald-400' : 'text-zinc-600 hover:text-zinc-400'
+          isFavorite ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-300 dark:text-zinc-600 hover:text-slate-500 dark:hover:text-zinc-400'
         }`}
         title={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
       >

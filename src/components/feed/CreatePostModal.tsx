@@ -20,7 +20,6 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
   const isGeneralFeed = !moduleContext
   const isNotes = moduleContext?.section === 'NOTES'
 
-  // Shared fields
   const [postBody, setPostBody] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [imageUrl, setImageUrl] = useState('')
@@ -29,15 +28,12 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  // Module-only fields
   const [title, setTitle] = useState('')
   const [noteTag, setNoteTag] = useState('')
 
-  // Image upload tracking
   const [imageUploading, setImageUploading] = useState(false)
   const [imageUploadedName, setImageUploadedName] = useState('')
 
-  // File/PDF upload tracking
   const [fileUploading, setFileUploading] = useState(false)
   const [fileUploadedName, setFileUploadedName] = useState('')
 
@@ -130,26 +126,25 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 dark:bg-black/70 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-zinc-800">
-          <h2 className="text-zinc-100 font-semibold text-base">
+        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-zinc-800">
+          <h2 className="text-slate-900 dark:text-zinc-100 font-semibold text-base">
             {moduleContext ? 'Post to Module' : 'Create Post'}
           </h2>
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300 text-xl leading-none">
+          <button onClick={onClose} className="text-slate-400 dark:text-zinc-500 hover:text-slate-700 dark:hover:text-zinc-300 text-xl leading-none">
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           {isGeneralFeed ? (
-            /* ── Unified General Feed form ── */
             <>
               <textarea
                 value={postBody}
@@ -157,7 +152,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                 placeholder="What's on your mind?"
                 rows={4}
                 maxLength={1000}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
+                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-slate-900 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
               />
 
               <input
@@ -165,7 +160,7 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="Add a link (optional)"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-slate-900 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
               />
 
               <div className="flex gap-3">
@@ -198,56 +193,50 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
                   type="checkbox"
                   checked={isAnonymous}
                   onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="w-4 h-4 rounded border-zinc-700 bg-zinc-800 accent-emerald-500"
+                  className="w-4 h-4 rounded border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800 accent-emerald-500"
                 />
-                <span className="text-sm text-zinc-400">Post anonymously</span>
+                <span className="text-sm text-slate-500 dark:text-zinc-400">Post anonymously</span>
               </label>
             </>
           ) : (
-            /* ── Module post form (unified) ── */
             <>
-              {/* Note tag selector (NOTES section only — required) */}
               {isNotes && (
                 <select
                   value={noteTag}
                   onChange={(e) => setNoteTag(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 text-zinc-200"
+                  className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 text-slate-900 dark:text-zinc-200"
                 >
-                  <option value="" disabled className="text-zinc-500">Select a tag…</option>
+                  <option value="" disabled className="text-slate-400 dark:text-zinc-500">Select a tag…</option>
                   {NOTE_TAGS.map((tag) => (
                     <option key={tag} value={tag}>{tag}</option>
                   ))}
                 </select>
               )}
 
-              {/* Title (required) */}
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-slate-900 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
               />
 
-              {/* Body (optional) */}
               <textarea
                 value={postBody}
                 onChange={(e) => setPostBody(e.target.value)}
                 placeholder="Description (optional)…"
                 rows={3}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
+                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-slate-900 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 resize-none"
               />
 
-              {/* Link URL (optional) */}
               <input
                 type="url"
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="Link URL (optional)"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-200 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg px-3 py-2.5 text-slate-900 dark:text-zinc-200 text-sm placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
               />
 
-              {/* Image + file uploads (optional) */}
               <div className="flex gap-3">
                 <UploadButton
                   accept="image/*"
@@ -275,13 +264,13 @@ export default function CreatePostModal({ onClose, onCreated, moduleContext }: P
             </>
           )}
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>}
 
           <div className="flex gap-3 pt-1">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-colors"
+              className="flex-1 py-2.5 rounded-lg border border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 text-sm font-medium transition-colors"
             >
               Cancel
             </button>
@@ -355,67 +344,17 @@ function UploadButton({
       <div
         className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
           dragOver
-            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
             : uploaded
-            ? 'border-emerald-600 bg-emerald-500/10 text-emerald-400'
+            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
             : uploading
-            ? 'border-zinc-600 bg-zinc-800 text-zinc-400'
-            : 'border-zinc-700 bg-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-zinc-200'
+            ? 'border-slate-300 dark:border-zinc-600 bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-400'
+            : 'border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:border-slate-300 dark:hover:border-zinc-600 text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200'
         }`}
       >
         <span>{uploading ? '⏳' : uploaded ? '✅' : dragOver ? '📥' : icon}</span>
         <span className="truncate max-w-[120px]">
           {uploading ? 'Uploading…' : uploaded ? uploadedName : dragOver ? 'Drop here' : label}
-        </span>
-      </div>
-    </label>
-  )
-}
-
-function FilePicker({
-  accept,
-  label,
-  uploading,
-  uploadedFileName,
-  uploaded,
-  onChange,
-}: {
-  accept: string
-  label: string
-  uploading: boolean
-  uploadedFileName: string
-  uploaded: boolean
-  onChange: (file: File) => void
-}) {
-  return (
-    <label className="block w-full cursor-pointer">
-      <input
-        type="file"
-        accept={accept}
-        className="sr-only"
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) onChange(file)
-        }}
-      />
-      <div
-        className={`flex items-center gap-3 border border-dashed rounded-lg px-4 py-3 transition-colors ${
-          uploaded
-            ? 'border-emerald-600 bg-emerald-500/5'
-            : 'border-zinc-700 bg-zinc-800 hover:border-emerald-600'
-        }`}
-      >
-        <span className="text-lg flex-shrink-0">
-          {uploading ? '⏳' : uploaded ? '✅' : '📎'}
-        </span>
-        <span className="text-sm truncate min-w-0">
-          {uploading ? (
-            <span className="text-zinc-400">Uploading…</span>
-          ) : uploaded ? (
-            <span className="text-emerald-400">{uploadedFileName}</span>
-          ) : (
-            <span className="text-zinc-500">{label}</span>
-          )}
         </span>
       </div>
     </label>

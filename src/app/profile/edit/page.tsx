@@ -14,10 +14,10 @@ export default async function EditProfilePage() {
   })
 
   return (
-    <main className="min-h-screen bg-zinc-950 pt-20 pb-12">
+    <main className="min-h-screen pt-20 pb-12">
       <div className="max-w-lg mx-auto px-4">
-        <h1 className="text-2xl font-bold text-white mb-2">Edit Profile</h1>
-        <p className="text-zinc-400 text-sm mb-8">Update your bio, avatar, and LinkedIn.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Edit Profile</h1>
+        <p className="text-slate-500 dark:text-zinc-400 text-sm mb-8">Update your bio, avatar, and LinkedIn.</p>
         <EditProfileClient
           userId={user.id}
           initialBio={dbUser?.bio ?? ''}

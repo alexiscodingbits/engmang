@@ -59,6 +59,7 @@ model Post {
   linkUrl     String?
   fileUrl     String?  // R2-hosted attachment (PDFs, docs, images)
   isAnonymous Boolean        @default(false)
+  isPinned    Boolean        @default(false)
   noteTag     String?  // Tag for module NOTES section posts
   // Module posts only
   moduleCode  String?

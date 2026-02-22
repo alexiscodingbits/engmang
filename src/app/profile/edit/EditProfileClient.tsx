@@ -81,14 +81,14 @@ export default function EditProfileClient({
     <form onSubmit={handleSave} className="space-y-6">
       {/* Avatar */}
       <div>
-        <label className="block text-sm text-zinc-400 mb-3">Profile Picture</label>
+        <label className="block text-sm text-slate-500 dark:text-zinc-400 mb-3">Profile Picture</label>
         <div className="flex items-center gap-4">
           <div className="shrink-0">
             {avatarUrl ? (
               <img
                 src={avatarUrl}
                 alt="Avatar"
-                className="w-16 h-16 rounded-full object-cover border-2 border-zinc-700"
+                className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 dark:border-zinc-700"
               />
             ) : (
               <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center text-white text-2xl font-bold">
@@ -101,7 +101,7 @@ export default function EditProfileClient({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={avatarUploading}
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 text-sm rounded-lg transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 text-sm rounded-lg transition-colors disabled:opacity-50"
             >
               {avatarUploading ? 'Uploading…' : 'Upload photo'}
             </button>
@@ -109,7 +109,7 @@ export default function EditProfileClient({
               <button
                 type="button"
                 onClick={() => setAvatarUrl('')}
-                className="text-xs text-zinc-500 hover:text-red-400 transition-colors text-left"
+                className="text-xs text-slate-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors text-left"
               >
                 Remove photo
               </button>
@@ -130,8 +130,8 @@ export default function EditProfileClient({
 
       {/* Bio */}
       <div>
-        <label htmlFor="bio" className="block text-sm text-zinc-400 mb-1.5">
-          Bio <span className="text-zinc-600">({bio.length}/300)</span>
+        <label htmlFor="bio" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+          Bio <span className="text-slate-400 dark:text-zinc-600">({bio.length}/300)</span>
         </label>
         <textarea
           id="bio"
@@ -139,14 +139,14 @@ export default function EditProfileClient({
           onChange={(e) => setBio(e.target.value.slice(0, 300))}
           placeholder="Tell people a bit about yourself…"
           rows={4}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+          className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
         />
       </div>
 
       {/* LinkedIn URL */}
       <div>
-        <label htmlFor="linkedin" className="block text-sm text-zinc-400 mb-1.5">
-          LinkedIn URL <span className="text-zinc-600">(optional)</span>
+        <label htmlFor="linkedin" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+          LinkedIn URL <span className="text-slate-400 dark:text-zinc-600">(optional)</span>
         </label>
         <input
           id="linkedin"
@@ -154,19 +154,19 @@ export default function EditProfileClient({
           value={linkedInUrl}
           onChange={(e) => setLinkedInUrl(e.target.value)}
           placeholder="https://linkedin.com/in/yourname"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+          className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
         />
       </div>
 
       {error && (
-        <p className="text-red-400 text-sm">{error}</p>
+        <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>
       )}
 
       <div className="flex gap-3">
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex-1 py-2.5 rounded-xl border border-zinc-700 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-colors"
+          className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 text-sm font-medium transition-colors"
         >
           Cancel
         </button>

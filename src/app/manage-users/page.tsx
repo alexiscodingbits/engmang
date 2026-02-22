@@ -18,10 +18,10 @@ export default async function ManageUsersPage() {
   })
 
   return (
-    <main className="min-h-screen bg-zinc-950 pt-20 pb-12">
+    <main className="min-h-screen pt-20 pb-12">
       <div className="max-w-3xl mx-auto px-4">
-        <h1 className="text-2xl font-bold text-white mb-2">Manage Users</h1>
-        <p className="text-zinc-400 text-sm mb-8">Remove users from the platform.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Manage Users</h1>
+        <p className="text-slate-500 dark:text-zinc-400 text-sm mb-8">Remove users from the platform.</p>
         <ManageUsersClient users={users} />
       </div>
     </main>

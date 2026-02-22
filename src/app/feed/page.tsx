@@ -18,7 +18,7 @@ export default async function FeedPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 pt-20 pb-12">
+    <main className="min-h-screen pt-20 pb-12">
       <div className="max-w-3xl mx-auto px-4">
         <FeedClient showTour={!dbUser?.hasSeenTour} userRole={dbUser.role} />
       </div>

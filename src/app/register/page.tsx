@@ -51,17 +51,17 @@ export default function RegisterPage() {
     <div className="flex flex-col items-center justify-center min-h-[70vh]">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-1">Create your account</h1>
-        <p className="text-zinc-400 text-sm mb-8">Join the EngMang community</p>
+        <p className="text-slate-500 dark:text-zinc-400 text-sm mb-8">Join the EngMang community</p>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+          <div className="bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm text-zinc-400 mb-1.5">
+            <label htmlFor="name" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
               Full Name
             </label>
             <input
@@ -71,12 +71,12 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="John Smith"
               required
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm text-zinc-400 mb-1.5">
+            <label htmlFor="email" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
               TCD Email
             </label>
             <input
@@ -86,12 +86,12 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@tcd.ie"
               required
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-zinc-400 mb-1.5">
+            <label htmlFor="password" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
               Password
             </label>
             <input
@@ -102,19 +102,19 @@ export default function RegisterPage() {
               placeholder="••••••••"
               required
               minLength={8}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="year" className="block text-sm text-zinc-400 mb-1.5">
+            <label htmlFor="year" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
               Year
             </label>
             <select
               id="year"
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
             >
               <option value="1">1st Year</option>
               <option value="2">2nd Year</option>
@@ -129,9 +129,9 @@ export default function RegisterPage() {
               type="checkbox"
               checked={isClassRep}
               onChange={(e) => setIsClassRep(e.target.checked)}
-              className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 accent-emerald-500"
+              className="w-4 h-4 rounded border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-900 accent-emerald-500"
             />
-            <span className="text-sm text-zinc-400">I am a class rep</span>
+            <span className="text-sm text-slate-500 dark:text-zinc-400">I am a class rep</span>
           </label>
 
           <button
@@ -143,9 +143,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-sm text-zinc-500 mt-6 text-center">
+        <p className="text-sm text-slate-400 dark:text-zinc-500 mt-6 text-center">
           Already have an account?{' '}
-          <Link href="/login" className="text-emerald-400 hover:text-emerald-300">
+          <Link href="/login" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300">
             Log in
           </Link>
         </p>
