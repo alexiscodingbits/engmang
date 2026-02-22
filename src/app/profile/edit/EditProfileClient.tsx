@@ -51,6 +51,13 @@ export default function EditProfileClient({
     }
   }
 
+  function sanitiseUrl(raw: string): string {
+    const trimmed = raw.trim()
+    if (!trimmed) return ''
+    if (/^https?:\/\//i.test(trimmed)) return trimmed
+    return `https://${trimmed}`
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
@@ -58,7 +65,7 @@ export default function EditProfileClient({
     const res = await fetch('/api/user/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bio, avatarUrl, linkedInUrl }),
+      body: JSON.stringify({ bio, avatarUrl, linkedInUrl: sanitiseUrl(linkedInUrl) }),
     })
     setSaving(false)
     if (res.ok) {
@@ -143,7 +150,7 @@ export default function EditProfileClient({
         </label>
         <input
           id="linkedin"
-          type="url"
+          type="text"
           value={linkedInUrl}
           onChange={(e) => setLinkedInUrl(e.target.value)}
           placeholder="https://linkedin.com/in/yourname"
