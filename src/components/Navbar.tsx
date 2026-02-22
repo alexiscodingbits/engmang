@@ -11,6 +11,8 @@ export default function Navbar() {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null>(null)
   const [role, setRole] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string | null>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -18,16 +20,30 @@ export default function Navbar() {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
       if (data.user) {
-        fetch('/api/user/me').then((r) => r.json()).then((d) => setRole(d.role ?? null))
+        fetch('/api/user/me')
+          .then((r) => r.json())
+          .then((d) => {
+            setRole(d.role ?? null)
+            setUserName(d.name ?? null)
+            setAvatarUrl(d.avatarUrl ?? null)
+          })
       }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        fetch('/api/user/me').then((r) => r.json()).then((d) => setRole(d.role ?? null))
+        fetch('/api/user/me')
+          .then((r) => r.json())
+          .then((d) => {
+            setRole(d.role ?? null)
+            setUserName(d.name ?? null)
+            setAvatarUrl(d.avatarUrl ?? null)
+          })
       } else {
         setRole(null)
+        setUserName(null)
+        setAvatarUrl(null)
       }
     })
 
@@ -49,10 +65,34 @@ export default function Navbar() {
   return (
     <nav id="tour-navbar" className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold tracking-tight text-white">
-          eng<span className="text-emerald-400">mang</span>
-        </Link>
+        {/* Left: logo + avatar */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="text-xl font-bold tracking-tight text-white">
+            eng<span className="text-emerald-400">mang</span>
+          </Link>
 
+          {user && (
+            <Link
+              href="/profile/edit"
+              title="Edit your profile"
+              className="group flex-shrink-0"
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={userName ?? 'Profile'}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-zinc-700 group-hover:border-emerald-500 transition-colors"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold border-2 border-transparent group-hover:border-emerald-400 transition-colors">
+                  {userName ? userName.charAt(0).toUpperCase() : '?'}
+                </div>
+              )}
+            </Link>
+          )}
+        </div>
+
+        {/* Right: nav links */}
         <div className="flex items-center gap-6">
           {user ? (
             <>
