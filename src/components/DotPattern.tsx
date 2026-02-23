@@ -189,17 +189,14 @@ export function DotPattern({
       mouseRef.current = { x: -1000, y: -1000 }
     }
 
-    const container = containerRef.current
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove)
-      container.addEventListener('mouseleave', handleMouseLeave)
-    }
+    // Use window so events fire even when the cursor is over content
+    // that sits above the fixed -z-10 canvas layer.
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseleave', handleMouseLeave)
 
     return () => {
-      if (container) {
-        container.removeEventListener('mousemove', handleMouseMove)
-        container.removeEventListener('mouseleave', handleMouseLeave)
-      }
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [])
 
