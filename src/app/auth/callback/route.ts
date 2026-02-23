@@ -53,8 +53,10 @@ export async function GET(request: NextRequest) {
 
   await ensureUser(user)
 
-  // Always redirect to /feed — feed/page.tsx handles the /welcome redirect for new users
-  const response = NextResponse.redirect(new URL('/feed', request.url))
+  // Redirect to `next` if provided and safe, otherwise /feed
+  const next = searchParams.get('next')
+  const redirectPath = next && next.startsWith('/') ? next : '/feed'
+  const response = NextResponse.redirect(new URL(redirectPath, request.url))
 
   // Attach the Supabase session cookies to the redirect response
   cookiesToSet.forEach(({ name, value, options }) => {

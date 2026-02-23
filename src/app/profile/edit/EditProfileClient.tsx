@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   userId: string
@@ -26,6 +27,10 @@ export default function EditProfileClient({
   const [linkedInUrl, setLinkedInUrl] = useState(initialLinkedInUrl)
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber)
   const [smsNotifications, setSmsNotifications] = useState(initialSmsNotifications)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -66,8 +71,34 @@ export default function EditProfileClient({
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
-    setSaving(true)
     setError('')
+    setPasswordError('')
+    setPasswordSuccess(false)
+
+    // Password change — validate first, then call Supabase before saving profile
+    if (newPassword) {
+      if (newPassword.length < 8) {
+        setPasswordError('Password must be at least 8 characters.')
+        return
+      }
+      if (newPassword !== confirmPassword) {
+        setPasswordError('Passwords do not match.')
+        return
+      }
+      setSaving(true)
+      const supabase = createClient()
+      const { error: pwErr } = await supabase.auth.updateUser({ password: newPassword })
+      if (pwErr) {
+        setSaving(false)
+        setPasswordError(pwErr.message)
+        return
+      }
+      setPasswordSuccess(true)
+      setNewPassword('')
+      setConfirmPassword('')
+    }
+
+    setSaving(true)
     const res = await fetch('/api/user/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -197,6 +228,44 @@ export default function EditProfileClient({
           <div className="absolute left-[2px] top-[2px] w-5 h-5 bg-white rounded-full shadow-sm peer-checked:translate-x-5 transition-transform" />
         </div>
       </label>
+
+      {/* Change Password */}
+      <div className="border-t border-slate-200 dark:border-zinc-800 pt-6 space-y-4">
+        <h2 className="text-sm font-medium text-slate-700 dark:text-zinc-300">Change Password</h2>
+        <div>
+          <label htmlFor="new-password" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+            New password <span className="text-slate-400 dark:text-zinc-600">(optional)</span>
+          </label>
+          <input
+            id="new-password"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="••••••••"
+            minLength={8}
+            className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+          />
+        </div>
+        <div>
+          <label htmlFor="confirm-password" className="block text-sm text-slate-500 dark:text-zinc-400 mb-1.5">
+            Confirm new password
+          </label>
+          <input
+            id="confirm-password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+          />
+        </div>
+        {passwordError && (
+          <p className="text-red-500 dark:text-red-400 text-sm">{passwordError}</p>
+        )}
+        {passwordSuccess && (
+          <p className="text-emerald-600 dark:text-emerald-400 text-sm">Password updated successfully.</p>
+        )}
+      </div>
 
       {error && (
         <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>

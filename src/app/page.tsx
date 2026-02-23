@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import UnicornBackground from '@/components/UnicornBackground'
+import { DotPattern } from '@/components/DotPattern'
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
-      <UnicornBackground />
+      <DotPattern className="-z-10" />
       <div className="mb-2 text-sm font-medium tracking-widest uppercase text-emerald-400">
         TCD Engineering with Management
       </div>
