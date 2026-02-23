@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import MessagesClient from '@/components/messages/MessagesClient'
 import type { Contact } from '@/components/messages/MessagesClient'
-import { DotPattern } from '@/components/DotPattern'
+import { HexagonBackground } from '@/components/HexagonBackground'
 
 interface Props {
   searchParams: Promise<{ with?: string }>
@@ -28,7 +28,7 @@ export default async function MessagesPage({ searchParams }: Props) {
 
   return (
     <>
-      <DotPattern className="-z-10" />
+      <HexagonBackground className="-z-10" />
     <div className="flex h-[75vh] min-h-[500px] bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border border-slate-200 dark:border-zinc-800">
       <MessagesClient
         currentUserId={user.id}
