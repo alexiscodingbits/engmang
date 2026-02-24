@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
   const moduleCode = searchParams.get('moduleCode')
   const moduleYear = searchParams.get('moduleYear')
   const section = searchParams.get('section')
+  const yearFilter = searchParams.get('year')
 
   const where: any = {}
   if (moduleCode && moduleYear && section) {
@@ -24,6 +25,9 @@ export async function GET(req: NextRequest) {
     where.section = section as ModuleSection
   } else {
     where.moduleCode = null
+    if (yearFilter) {
+      where.author = { year: parseInt(yearFilter) }
+    }
   }
 
   const posts = await prisma.post.findMany({

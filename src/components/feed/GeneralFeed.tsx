@@ -6,20 +6,27 @@ import CreatePostModal from './CreatePostModal'
 import type { Post } from './types'
 
 type Sort = 'newest' | 'popular'
+type YearFilter = 'my' | 'all'
 
-export default function GeneralFeed() {
+interface Props {
+  userYear: number
+}
+
+export default function GeneralFeed({ userYear }: Props) {
   const [posts, setPosts] = useState<Post[]>([])
   const [sort, setSort] = useState<Sort>('newest')
+  const [yearFilter, setYearFilter] = useState<YearFilter>('my')
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const fetchPosts = useCallback(async () => {
     setLoading(true)
-    const res = await fetch(`/api/posts?sort=${sort}`)
+    const yearParam = yearFilter === 'my' ? `&year=${userYear}` : ''
+    const res = await fetch(`/api/posts?sort=${sort}${yearParam}`)
     if (res.ok) setPosts(await res.json())
     setLoading(false)
-  }, [sort])
+  }, [sort, yearFilter, userYear])
 
   useEffect(() => { fetchPosts() }, [fetchPosts])
 
@@ -52,7 +59,7 @@ export default function GeneralFeed() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex gap-2">
           {(['newest', 'popular'] as Sort[]).map((s) => (
             <button
@@ -74,6 +81,30 @@ export default function GeneralFeed() {
           className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-sm px-4 py-2 rounded-lg transition-colors"
         >
           <span className="text-lg leading-none">+</span> New Post
+        </button>
+      </div>
+
+      {/* Year filter */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setYearFilter('my')}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            yearFilter === 'my'
+              ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
+              : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
+          }`}
+        >
+          My Year
+        </button>
+        <button
+          onClick={() => setYearFilter('all')}
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            yearFilter === 'all'
+              ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
+              : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
+          }`}
+        >
+          All Years
         </button>
       </div>
 

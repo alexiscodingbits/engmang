@@ -12,10 +12,11 @@ type Tab = 'general' | 'modules'
 interface Props {
   showTour?: boolean
   userRole?: UserRole
+  userYear?: number
 }
 
-export default function FeedClient({ showTour = false, userRole = 'USER' }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>('general')
+export default function FeedClient({ showTour = false, userRole = 'USER', userYear = 1 }: Props) {
+  const [activeTab, setActiveTab] = useState<Tab>('modules')
   const [runTour, setRunTour] = useState(false)
 
   useEffect(() => {
@@ -32,17 +33,6 @@ export default function FeedClient({ showTour = false, userRole = 'USER' }: Prop
         {/* Tab switcher */}
         <div className="flex gap-1 mb-6 bg-slate-100 dark:bg-zinc-900 rounded-xl p-1 border border-slate-200 dark:border-zinc-800">
           <button
-            id="tour-general-feed-tab"
-            onClick={() => setActiveTab('general')}
-            className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === 'general'
-                ? 'bg-emerald-500 text-zinc-950'
-                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
-            }`}
-          >
-            General Feed
-          </button>
-          <button
             id="tour-modules-tab"
             onClick={() => setActiveTab('modules')}
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
@@ -53,9 +43,20 @@ export default function FeedClient({ showTour = false, userRole = 'USER' }: Prop
           >
             Modules
           </button>
+          <button
+            id="tour-general-feed-tab"
+            onClick={() => setActiveTab('general')}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'general'
+                ? 'bg-emerald-500 text-zinc-950'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
+            }`}
+          >
+            General Feed
+          </button>
         </div>
 
-        {activeTab === 'general' ? <GeneralFeed /> : <ModulesSection />}
+        {activeTab === 'general' ? <GeneralFeed userYear={userYear} /> : <ModulesSection />}
 
         {runTour && (
           <Suspense fallback={null}>
