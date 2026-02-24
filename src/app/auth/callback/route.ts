@@ -5,6 +5,7 @@ import { ensureUser } from '@/lib/supabase/ensure-user'
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
+  const type = searchParams.get('type')
   const errorParam = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
 
@@ -52,6 +53,15 @@ export async function GET(request: NextRequest) {
   }
 
   await ensureUser(user)
+
+  // Password recovery — session is now set; send straight to reset page
+  if (type === 'recovery') {
+    const response = NextResponse.redirect(new URL('/auth/reset-password', request.url))
+    cookiesToSet.forEach(({ name, value, options }) => {
+      response.cookies.set(name, value, options as Parameters<typeof response.cookies.set>[2])
+    })
+    return response
+  }
 
   // Redirect to `next` if provided and safe, otherwise /feed
   const next = searchParams.get('next')
