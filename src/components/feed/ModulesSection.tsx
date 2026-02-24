@@ -23,16 +23,20 @@ export default function ModulesSection() {
   const [showModal, setShowModal] = useState(false)
   const [tagFilter, setTagFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
+  const [moduleCounts, setModuleCounts] = useState<Record<string, number>>({})
 
   const modules = getModulesForYear(year)
   const selectedModule = modules.find((m) => m.code === moduleCode)
 
-  // Reset module when year changes
+  // Reset module when year changes and fetch counts for new year
   useEffect(() => {
     setModuleCode('')
     setPosts([])
     setTagFilter('All')
     setSearchQuery('')
+    fetch(`/api/modules/counts?year=${year}`)
+      .then((r) => r.ok ? r.json() : {})
+      .then(setModuleCounts)
   }, [year])
 
   // Reset filters when section or module changes
@@ -114,13 +118,18 @@ export default function ModulesSection() {
             <button
               key={m.code}
               onClick={() => setModuleCode(m.code)}
-              className={`text-left px-3 py-2.5 rounded-lg border text-sm transition-colors ${
+              className={`flex items-center justify-between gap-2 text-left px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                 moduleCode === m.code
                   ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300'
                   : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 hover:text-slate-800 dark:hover:text-zinc-200'
               }`}
             >
-              {m.name}
+              <span>{m.name}</span>
+              {moduleCounts[m.code] !== undefined && (
+                <span className="shrink-0 min-w-[1.5rem] text-center px-1.5 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
+                  {moduleCounts[m.code]}
+                </span>
+              )}
             </button>
           ))}
         </div>
