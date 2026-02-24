@@ -60,7 +60,7 @@ export default function WelcomeClient({ name }: Props) {
               specifically for your course. I hope it makes your year a little easier.
             </p>
             <p className="text-zinc-400 text-sm mt-4 font-medium">
-              — Alex McConnell, EngMan Final Year
+              — Alex McConnell, EngMang 2nd Year
             </p>
           </div>
 
